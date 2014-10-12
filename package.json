@@ -1,0 +1,35 @@
+{
+  "name": "map-obj",
+  "version": "0.0.0",
+  "description": "Map object keys and values into a new object",
+  "license": "MIT",
+  "repository": "sindresorhus/map-obj",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "http://sindresorhus.com"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "map",
+    "obj",
+    "object",
+    "key",
+    "keys",
+    "value",
+    "values",
+    "val",
+    "iterate"
+  ],
+  "devDependencies": {
+    "ava": "0.0.4"
+  }
+}
