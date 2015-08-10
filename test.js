@@ -3,7 +3,7 @@ var test = require('ava');
 var mapObj = require('./');
 
 test(function (t) {
-	t.assert(mapObj({foo: 'bar'}, function (key, val) {
+	t.assert(mapObj({foo: 'bar'}, function (key) {
 		return [key, 'unicorn'];
 	}).foo === 'unicorn');
 
