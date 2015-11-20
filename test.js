@@ -15,5 +15,13 @@ test(function (t) {
 		return [val, key];
 	}).bar === 'foo');
 
+	var target = {};
+
+	t.assert(mapObj({foo: 'bar'}, function (key, val) {
+		return [val, key];
+	}, target) === target);
+
+	t.assert(target.bar === 'foo');
+
 	t.end();
 });
