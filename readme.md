@@ -23,6 +23,24 @@ var newObject = mapObj({foo: 'bar'}, function (key, value, object) {
 //=> {bar: 'foo'}
 ```
 
+## API
+
+### mapObj(source, mapFn, [target]);
+ 
+- `source` - the source object to copy properties from.
+
+- `mapFn` - the mapping function.
+  
+  It has signature `mapFn(sourceKey, sourceValue, source)`. 
+  
+  It must return a two item array: `[targetKey, targetValue]`.
+  
+- `target` - *optional* - specify the target object to map properties on to. 
+
+  An empty object will be created if not supplied.
+ 
+**Returns:** `target`
+
 
 ## Related
 
