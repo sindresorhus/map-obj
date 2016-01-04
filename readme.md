@@ -28,13 +28,13 @@ const newObject = mapObj({foo: 'bar'}, (key, value) => [value, key]);
 
 Type: `object`
 
-The source object to copy properties from.
+Source object to copy properties from.
 
 #### mapFn
 
 Type: `function`
 
-The mapping function.
+Mapping function.
 
 - It has signature `mapFn(sourceKey, sourceValue, source)`. 
 - It must return a two item array: `[targetKey, targetValue]`.
@@ -44,7 +44,7 @@ The mapping function.
 Type: `object`  
 Default: `{}`
 
-The target object to map properties on to.
+Target object to map properties on to.
 
 
 ## Related
