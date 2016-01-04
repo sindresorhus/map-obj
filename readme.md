@@ -13,33 +13,38 @@ $ npm install --save map-obj
 ## Usage
 
 ```js
-var mapObj = require('map-obj');
+const mapObj = require('map-obj');
 
-var newObject = mapObj({foo: 'bar'}, function (key, value, object) {
-	// first element is the new key and second is the new value
-	// here we reverse the order
-	return [value, key];
-});
+const newObject = mapObj({foo: 'bar'}, (key, value) => [value, key]);
 //=> {bar: 'foo'}
 ```
 
+
 ## API
 
-### mapObj(source, mapFn, [target]);
- 
-- `source` - the source object to copy properties from.
+### mapObj(source, mapFn, [target])
 
-- `mapFn` - the mapping function.
-  
-  It has signature `mapFn(sourceKey, sourceValue, source)`. 
-  
-  It must return a two item array: `[targetKey, targetValue]`.
-  
-- `target` - *optional* - specify the target object to map properties on to. 
+#### source
 
-  An empty object will be created if not supplied.
- 
-**Returns:** `target`
+Type: `object`
+
+The source object to copy properties from.
+
+#### mapFn
+
+Type: `function`
+
+The mapping function.
+
+- It has signature `mapFn(sourceKey, sourceValue, source)`. 
+- It must return a two item array: `[targetKey, targetValue]`.
+
+#### target
+
+Type: `object`  
+Default: `{}`
+
+The target object to map properties on to.
 
 
 ## Related
