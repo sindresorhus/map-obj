@@ -28,7 +28,12 @@
     "values",
     "val",
     "iterate",
-    "iterator"
+    "iterator",
+    "rename",
+    "modify",
+    "deep",
+    "recurse",
+    "recursive"
   ],
   "devDependencies": {
     "ava": "*",
