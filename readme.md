@@ -39,14 +39,18 @@ Mapping function.
 - It has signature `mapper(sourceKey, sourceValue, source)`.
 - It must return a two item array: `[targetKey, targetValue]`.
 
-#### deep
+#### options
+
+Type: `Object`
+
+##### deep
 
 Type: `boolean`<br>
 Default: `false`
 
 Recurse nested objects and objects in arrays.
 
-#### target
+##### target
 
 Type: `Object`<br>
 Default: `{}`
