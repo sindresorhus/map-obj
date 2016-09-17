@@ -1,29 +1,40 @@
 'use strict';
 
-var isObject = function (x) {
-	return typeof x === 'object' && x !== null;
-};
+// customized for this use-case
+const isObject = x =>
+	typeof x === 'object' &&
+	x !== null &&
+	!(x instanceof RegExp) &&
+	!(x instanceof Error) &&
+	!(x instanceof Date);
 
-module.exports = function mapObj(obj, fn, opts) {
-	opts = opts || {};
+module.exports = function mapObj(obj, fn, opts, seen) {
+	opts = Object.assign({
+		deep: false,
+		target: {}
+	}, opts);
 
-	var target = opts.target || {};
+	seen = seen || new WeakMap();
+
+	if (seen.has(obj)) {
+		return seen.get(obj);
+	}
+
+	seen.set(obj, opts.target);
+
+	const target = opts.target;
 	delete opts.target;
-	var keys = Object.keys(obj);
 
-	for (var i = 0; i < keys.length; i++) {
-		var key = keys[i];
-		var val = obj[key];
-		var res = fn(key, val, obj);
-		var newVal = res[1];
+	for (const key of Object.keys(obj)) {
+		const val = obj[key];
+		const res = fn(key, val, obj);
+		let newVal = res[1];
 
 		if (opts.deep && isObject(newVal)) {
 			if (Array.isArray(newVal)) {
-				newVal = newVal.map(function (x) {
-					return isObject(x) ? mapObj(x, fn, opts) : x;
-				});
+				newVal = newVal.map(x => isObject(x) ? mapObj(x, fn, opts, seen) : x);
 			} else {
-				newVal = mapObj(newVal, fn, opts);
+				newVal = mapObj(newVal, fn, opts, seen);
 			}
 		}
 

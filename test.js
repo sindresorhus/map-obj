@@ -14,9 +14,26 @@ test('target option', t => {
 });
 
 test('deep option', t => {
-	const actual = {one: 1, obj: {two: 2, three: 3}, arr: [{four: 4}, 5]};
+	const obj = {one: 1, obj: {two: 2, three: 3}, arr: [{four: 4}, 5]};
 	const expected = {one: 2, obj: {two: 4, three: 6}, arr: [{four: 8}, 5]};
 	const fn = (key, val) => [key, typeof val === 'number' ? val * 2 : val];
-	const obj = m(actual, fn, {deep: true});
-	t.deepEqual(obj, expected);
+	const actual = m(obj, fn, {deep: true});
+	t.deepEqual(actual, expected);
+});
+
+test('handles circular references', t => {
+	const obj = {one: 1, arr: [2]};
+	obj.circular = obj;
+	obj.arr2 = obj.arr;
+	obj.arr.push(obj);
+
+	const fn = (key, val) => [key.toUpperCase(), val];
+	const actual = m(obj, fn, {deep: true});
+
+	const expected = {ONE: 1, ARR: [2]};
+	expected.CIRCULAR = expected;
+	expected.ARR2 = expected.ARR;
+	expected.ARR.push(expected);
+
+	t.deepEqual(actual, expected);
 });

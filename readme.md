@@ -26,17 +26,17 @@ const newObject = mapObj({foo: 'bar'}, (key, value) => [value, key]);
 
 #### source
 
-Type: `object`
+Type: `Object`
 
 Source object to copy properties from.
 
 #### mapper
 
-Type: `function`
+Type: `Function`
 
 Mapping function.
 
-- It has signature `mapper(sourceKey, sourceValue, source)`. 
+- It has signature `mapper(sourceKey, sourceValue, source)`.
 - It must return a two item array: `[targetKey, targetValue]`.
 
 #### deep
@@ -48,7 +48,7 @@ Recurse nested objects and objects in arrays.
 
 #### target
 
-Type: `object`  
+Type: `Object`<br>
 Default: `{}`
 
 Target object to map properties on to.
@@ -62,4 +62,4 @@ Target object to map properties on to.
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](https://sindresorhus.com)
