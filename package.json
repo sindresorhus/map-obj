@@ -13,7 +13,9 @@
     "node": ">=4"
   },
   "scripts": {
-    "test": "xo && ava"
+    "test": "xo && ava",
+    "build": "babel --presets env --plugins transform-runtime index.js -d lib",
+    "prepublish": "npm run build"
   },
   "files": [
     "index.js"
@@ -37,9 +39,19 @@
   ],
   "devDependencies": {
     "ava": "*",
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.4.0",
     "xo": "*"
   },
   "xo": {
-    "esnext": true
+    "esnext": true,
+    "ignore": [
+      "lib/index.js"
+    ]
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "babel-runtime": "^6.23.0"
   }
 }
