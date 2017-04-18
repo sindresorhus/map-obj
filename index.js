@@ -1,6 +1,6 @@
 'use strict';
 
-// customized for this use-case
+// Customized for this use-case
 const isObject = x =>
 	typeof x === 'object' &&
 	x !== null &&
