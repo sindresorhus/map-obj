@@ -28,6 +28,10 @@ module.exports = function mapObj(obj, fn, opts, seen) {
 	for (const key of Object.keys(obj)) {
 		const val = obj[key];
 		const res = fn(key, val, obj);
+		if(!res){
+			continue;
+		}
+		
 		let newVal = res[1];
 
 		if (opts.deep && isObject(newVal)) {
