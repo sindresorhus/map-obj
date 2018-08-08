@@ -21,6 +21,14 @@ test('deep option', t => {
 	t.deepEqual(actual, expected);
 });
 
+test('nested arrays', t => {
+	const obj = {arr: [[0, 1, 2, {a: 3}]]};
+	const expected = {arr: [[0, 1, 2, {a: 6}]]};
+	const fn = (key, val) => [key, typeof val === 'number' ? val * 2 : val];
+	const actual = m(obj, fn, {deep: true});
+	t.deepEqual(actual, expected);
+});
+
 test('handles circular references', t => {
 	const obj = {one: 1, arr: [2]};
 	obj.circular = obj;

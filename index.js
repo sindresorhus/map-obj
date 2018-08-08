@@ -25,6 +25,10 @@ module.exports = function mapObj(obj, fn, opts, seen) {
 	const target = opts.target;
 	delete opts.target;
 
+	if (Array.isArray(obj)) {
+		return mapArray(obj);
+	}
+
 	for (const key of Object.keys(obj)) {
 		const val = obj[key];
 		const res = fn(key, val, obj);
@@ -32,7 +36,7 @@ module.exports = function mapObj(obj, fn, opts, seen) {
 
 		if (opts.deep && isObject(newVal)) {
 			if (Array.isArray(newVal)) {
-				newVal = newVal.map(x => isObject(x) ? mapObj(x, fn, opts, seen) : x);
+				newVal = mapArray(newVal);
 			} else {
 				newVal = mapObj(newVal, fn, opts, seen);
 			}
@@ -42,4 +46,8 @@ module.exports = function mapObj(obj, fn, opts, seen) {
 	}
 
 	return target;
+
+	function mapArray(arr) {
+		return arr.map(x => isObject(x) ? mapObj(x, fn, opts, seen) : x);
+	}
 };
