@@ -8,46 +8,41 @@ const isObject = x =>
 	!(x instanceof Error) &&
 	!(x instanceof Date);
 
-module.exports = function mapObj(obj, fn, opts, seen) {
-	opts = Object.assign({
+module.exports = function mapObj(object, fn, options, seen) {
+	options = Object.assign({
 		deep: false,
 		target: {}
-	}, opts);
+	}, options);
 
 	seen = seen || new WeakMap();
 
-	if (seen.has(obj)) {
-		return seen.get(obj);
+	if (seen.has(object)) {
+		return seen.get(object);
 	}
 
-	seen.set(obj, opts.target);
+	seen.set(object, options.target);
 
-	const {target} = opts;
-	delete opts.target;
+	const {target} = options;
+	delete options.target;
 
-	if (Array.isArray(obj)) {
-		return mapArray(obj);
+	const mapArray = array => array.map(x => isObject(x) ? mapObj(x, fn, options, seen) : x);
+	if (Array.isArray(object)) {
+		return mapArray(object);
 	}
 
-	for (const key of Object.keys(obj)) {
-		const val = obj[key];
-		const res = fn(key, val, obj);
-		let newVal = res[1];
+	/// TODO: Use `Object.entries()` when targeting Node.js 8
+	for (const key of Object.keys(object)) {
+		const value = object[key];
+		let [newKey, newValue] = fn(key, value, object);
 
-		if (opts.deep && isObject(newVal)) {
-			if (Array.isArray(newVal)) {
-				newVal = mapArray(newVal);
-			} else {
-				newVal = mapObj(newVal, fn, opts, seen);
-			}
+		if (options.deep && isObject(newValue)) {
+			newValue = Array.isArray(newValue) ?
+				mapArray(newValue) :
+				mapObj(newValue, fn, options, seen);
 		}
 
-		target[res[0]] = newVal;
+		target[newKey] = newValue;
 	}
 
 	return target;
-
-	function mapArray(arr) {
-		return arr.map(x => isObject(x) ? mapObj(x, fn, opts, seen) : x);
-	}
 };

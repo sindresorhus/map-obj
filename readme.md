@@ -6,7 +6,7 @@
 ## Install
 
 ```
-$ npm install --save map-obj
+$ npm install map-obj
 ```
 
 
@@ -61,7 +61,6 @@ Target object to map properties on to.
 ## Related
 
 - [filter-obj](https://github.com/sindresorhus/filter-obj) - Filter object keys and values into a new object
-- [object-assign](https://github.com/sindresorhus/object-assign) - Copy enumerable own properties from one or more source objects to a target object
 
 
 ## License
