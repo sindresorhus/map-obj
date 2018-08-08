@@ -1,6 +1,6 @@
 'use strict';
 
-// customized for this use-case
+// Customized for this use-case
 const isObject = x =>
 	typeof x === 'object' &&
 	x !== null &&
@@ -22,7 +22,7 @@ module.exports = function mapObj(obj, fn, opts, seen) {
 
 	seen.set(obj, opts.target);
 
-	const target = opts.target;
+	const {target} = opts;
 	delete opts.target;
 
 	for (const key of Object.keys(obj)) {
