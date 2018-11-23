@@ -48,5 +48,13 @@ test('handles circular references', t => {
 
 test('handle non objects', t => {
 	t.is(m(1), 1);
+	t.is(m('foobar'), 'foobar');
 	t.deepEqual(m([1]), [1]);
+	t.is(m(null), null);
+	const r = /test/;
+	t.is(m(r), r);
+	const e = new Error('test');
+	t.is(m(e), e);
+	const d = new Date();
+	t.is(m(d), d);
 });
