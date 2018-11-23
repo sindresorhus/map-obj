@@ -45,3 +45,8 @@ test('handles circular references', t => {
 
 	t.deepEqual(actual, expected);
 });
+
+test('handle non objects', t => {
+	t.is(m(1), 1);
+	t.deepEqual(m([1]), [1]);
+});
