@@ -9,8 +9,10 @@ const isObject = x =>
 	!(x instanceof Date);
 
 module.exports = function mapObj(object, fn, options, seen) {
-	if (!isObject(object)) return object;
-	
+	if (!isObject(object)) {
+		return object;
+	}
+
 	options = Object.assign({
 		deep: false,
 		target: {}
