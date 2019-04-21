@@ -13,20 +13,20 @@ $ npm install map-obj
 ## Usage
 
 ```js
-const mapObj = require('map-obj');
+const mapObject = require('map-obj');
 
-const newObject = mapObj({foo: 'bar'}, (key, value) => [value, key]);
+const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 //=> {bar: 'foo'}
 ```
 
 
 ## API
 
-### mapObj(source, mapper, [options])
+### mapObject(source, mapper, [options])
 
 #### source
 
-Type: `Object`
+Type: `object`
 
 Source object to copy properties from.
 
@@ -41,7 +41,7 @@ Mapping function.
 
 #### options
 
-Type: `Object`
+Type: `object`
 
 ##### deep
 
@@ -52,7 +52,7 @@ Recurse nested objects and objects in arrays.
 
 ##### target
 
-Type: `Object`<br>
+Type: `object`<br>
 Default: `{}`
 
 Target object to map properties on to.
