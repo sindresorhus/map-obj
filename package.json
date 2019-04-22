@@ -1,6 +1,6 @@
 {
 	"name": "map-obj",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"description": "Map object keys and values into a new object",
 	"license": "MIT",
 	"repository": "sindresorhus/map-obj",
