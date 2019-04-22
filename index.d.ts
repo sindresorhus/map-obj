@@ -9,8 +9,6 @@ declare namespace mapObject {
 		source: SourceObjectType
 	) => [MappedObjectKeyType, MappedObjectValueType];
 
-
-
 	interface Options {
 		/**
 		Recurse nested objects and objects in arrays.
