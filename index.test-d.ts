@@ -4,31 +4,31 @@ import mapObject = require('.');
 const options: mapObject.Options = {};
 
 const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
-expectType<{[x: string]: 'foo'}>(newObject);
+expectType<{[key: string]: 'foo'}>(newObject);
 expectType<'foo'>(newObject.bar);
 
-const obj = mapObject({foo: 'bar'}, (key, value) => [value, key], {
+const object = mapObject({foo: 'bar'}, (key, value) => [value, key], {
 	target: {baz: 'baz'}
 });
-expectType<{baz: string} & {[x: string]: 'foo'}>(obj);
-expectType<'foo'>(obj.bar);
-expectType<string>(obj.baz);
+expectType<{baz: string} & {[x: string]: 'foo'}>(object);
+expectType<'foo'>(object.bar);
+expectType<string>(object.baz);
 
-const obj1 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
+const object1 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
 	target: {baz: 'baz'},
 	deep: false
 });
-expectType<{baz: string} & {[x: string]: 'foo'}>(obj1);
-expectType<'foo'>(obj1.bar);
-expectType<string>(obj1.baz);
+expectType<{baz: string} & {[x: string]: 'foo'}>(object1);
+expectType<'foo'>(object1.bar);
+expectType<string>(object1.baz);
 
-const obj2 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
+const object2 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
 	deep: true
 });
-expectType<{[key: string]: unknown}>(obj2);
-const obj3 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
+expectType<{[key: string]: unknown}>(object2);
+const object3 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
 	deep: true,
 	target: {bar: 'baz' as const}
 });
-expectType<{[key: string]: unknown}>(obj3);
-expectType<'baz'>(obj3.bar);
+expectType<{[key: string]: unknown}>(object3);
+expectType<'baz'>(object3.bar);

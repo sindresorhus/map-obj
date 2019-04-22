@@ -29,8 +29,7 @@ declare namespace mapObject {
 		deep: true;
 	}
 
-	interface TargetOptions<TargetObjectType extends {[key: string]: unknown}>
-		extends Options {
+	interface TargetOptions<TargetObjectType extends {[key: string]: unknown}> extends Options {
 		target: TargetObjectType;
 	}
 }

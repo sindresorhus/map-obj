@@ -1,31 +1,29 @@
 'use strict';
 
 // Customized for this use-case
-const isObject = x =>
-	typeof x === 'object' &&
-	x !== null &&
-	!(x instanceof RegExp) &&
-	!(x instanceof Error) &&
-	!(x instanceof Date);
+const isObject = value =>
+	typeof value === 'object' &&
+	value !== null &&
+	!(value instanceof RegExp) &&
+	!(value instanceof Error) &&
+	!(value instanceof Date);
 
-const mapObject = (object, fn, options, seen) => {
+const mapObject = (object, fn, options, isSeen = new WeakMap()) => {
 	options = Object.assign({
 		deep: false,
 		target: {}
 	}, options);
 
-	seen = seen || new WeakMap();
-
-	if (seen.has(object)) {
-		return seen.get(object);
+	if (isSeen.has(object)) {
+		return isSeen.get(object);
 	}
 
-	seen.set(object, options.target);
+	isSeen.set(object, options.target);
 
 	const {target} = options;
 	delete options.target;
 
-	const mapArray = array => array.map(x => isObject(x) ? mapObject(x, fn, options, seen) : x);
+	const mapArray = array => array.map(x => isObject(x) ? mapObject(x, fn, options, isSeen) : x);
 	if (Array.isArray(object)) {
 		return mapArray(object);
 	}
@@ -38,7 +36,7 @@ const mapObject = (object, fn, options, seen) => {
 		if (options.deep && isObject(newValue)) {
 			newValue = Array.isArray(newValue) ?
 				mapArray(newValue) :
-				mapObject(newValue, fn, options, seen);
+				mapObject(newValue, fn, options, isSeen);
 		}
 
 		target[newKey] = newValue;
