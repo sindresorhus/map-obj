@@ -9,10 +9,11 @@ const isObject = value =>
 	!(value instanceof Date);
 
 const mapObject = (object, fn, options, isSeen = new WeakMap()) => {
-	options = Object.assign({
+	options = {
 		deep: false,
-		target: {}
-	}, options);
+		target: {},
+		...options
+	};
 
 	if (isSeen.has(object)) {
 		return isSeen.get(object);
@@ -23,14 +24,12 @@ const mapObject = (object, fn, options, isSeen = new WeakMap()) => {
 	const {target} = options;
 	delete options.target;
 
-	const mapArray = array => array.map(x => isObject(x) ? mapObject(x, fn, options, isSeen) : x);
+	const mapArray = array => array.map(element => isObject(element) ? mapObject(element, fn, options, isSeen) : element);
 	if (Array.isArray(object)) {
 		return mapArray(object);
 	}
 
-	/// TODO: Use `Object.entries()` when targeting Node.js 8
-	for (const key of Object.keys(object)) {
-		const value = object[key];
+	for (const [key, value] of Object.entries(object)) {
 		let [newKey, newValue] = fn(key, value, object);
 
 		if (options.deep && isObject(newValue)) {
