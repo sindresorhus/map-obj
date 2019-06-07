@@ -1,8 +1,8 @@
 declare namespace mapObject {
 	type Mapper<
-		SourceObjectType extends {[key: string]: unknown},
+		SourceObjectType extends {[key: string]: any},
 		MappedObjectKeyType extends string,
-		MappedObjectValueType extends unknown
+		MappedObjectValueType
 	> = (
 		sourceKey: keyof SourceObjectType,
 		sourceValue: SourceObjectType[keyof SourceObjectType],
@@ -22,14 +22,14 @@ declare namespace mapObject {
 
 		@default {}
 		*/
-		target?: {[key: string]: unknown};
+		target?: {[key: string]: any};
 	}
 
 	interface DeepOptions extends Options {
 		deep: true;
 	}
 
-	interface TargetOptions<TargetObjectType extends {[key: string]: unknown}> extends Options {
+	interface TargetOptions<TargetObjectType extends {[key: string]: any}> extends Options {
 		target: TargetObjectType;
 	}
 }
@@ -50,9 +50,9 @@ const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 */
 declare function mapObject<
 	SourceObjectType extends object,
-	TargetObjectType extends {[key: string]: unknown},
+	TargetObjectType extends {[key: string]: any},
 	MappedObjectKeyType extends string,
-	MappedObjectValueType extends unknown = unknown
+	MappedObjectValueType
 >(
 	source: SourceObjectType,
 	mapper: mapObject.Mapper<
@@ -65,7 +65,7 @@ declare function mapObject<
 declare function mapObject<
 	SourceObjectType extends object,
 	MappedObjectKeyType extends string,
-	MappedObjectValueType extends unknown = unknown
+	MappedObjectValueType
 >(
 	source: SourceObjectType,
 	mapper: mapObject.Mapper<
@@ -76,10 +76,10 @@ declare function mapObject<
 	options: mapObject.DeepOptions
 ): {[key: string]: unknown};
 declare function mapObject<
-	SourceObjectType extends {[key: string]: unknown},
-	TargetObjectType extends {[key: string]: unknown},
+	SourceObjectType extends {[key: string]: any},
+	TargetObjectType extends {[key: string]: any},
 	MappedObjectKeyType extends string,
-	MappedObjectValueType extends unknown
+	MappedObjectValueType
 >(
 	source: SourceObjectType,
 	mapper: mapObject.Mapper<
@@ -90,9 +90,9 @@ declare function mapObject<
 	options: mapObject.TargetOptions<TargetObjectType>
 ): TargetObjectType & {[K in MappedObjectKeyType]: MappedObjectValueType};
 declare function mapObject<
-	SourceObjectType extends {[key: string]: unknown},
+	SourceObjectType extends {[key: string]: any},
 	MappedObjectKeyType extends string,
-	MappedObjectValueType extends unknown = unknown
+	MappedObjectValueType
 >(
 	source: SourceObjectType,
 	mapper: mapObject.Mapper<
