@@ -42,8 +42,8 @@ test('deep option', t => {
 		]
 	};
 
-	const fn = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
-	const actual = mapObject(object, fn, {deep: true});
+	const mapper = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
+	const actual = mapObject(object, mapper, {deep: true});
 	t.deepEqual(actual, expected);
 });
 
@@ -74,8 +74,8 @@ test('nested arrays', t => {
 		]
 	};
 
-	const fn = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
-	const actual = mapObject(object, fn, {deep: true});
+	const mapper = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
+	const actual = mapObject(object, mapper, {deep: true});
 	t.deepEqual(actual, expected);
 });
 
@@ -90,8 +90,8 @@ test('handles circular references', t => {
 	object.array2 = object.array;
 	object.array.push(object);
 
-	const fn = (key, value) => [key.toUpperCase(), value];
-	const actual = mapObject(object, fn, {deep: true});
+	const mapper = (key, value) => [key.toUpperCase(), value];
+	const actual = mapObject(object, mapper, {deep: true});
 
 	const expected = {
 		ONE: 1,
@@ -104,4 +104,10 @@ test('handles circular references', t => {
 	expected.ARRAY.push(expected);
 
 	t.deepEqual(actual, expected);
+});
+
+test('validates input', t => {
+	t.throws(() => {
+		mapObject(1, () => {});
+	}, TypeError);
 });
