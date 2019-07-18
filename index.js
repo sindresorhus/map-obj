@@ -7,7 +7,8 @@ const isObjectCustom = value =>
 	isObject(value) &&
 	!(value instanceof RegExp) &&
 	!(value instanceof Error) &&
-	!(value instanceof Date);
+	!(value instanceof Date) &&
+	!(value instanceof File);
 
 const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	options = {
