@@ -28,7 +28,7 @@ test('deep option', t => {
 		]
 	};
 
-	const expected = {
+	const expectedDeepTrue = {
 		one: 2,
 		object: {
 			two: 4,
@@ -42,9 +42,41 @@ test('deep option', t => {
 		]
 	};
 
+	const expectedDeepFalse = {
+		one: 2,
+		object: {
+			two: 2,
+			three: 3
+		},
+		array: [
+			{
+				four: 4
+			},
+			5
+		]
+	};
+
+	const expectedDeepFunction = {
+		one: 2,
+		object: {
+			two: 2,
+			three: 3
+		},
+		array: [
+			{
+				four: 8
+			},
+			5
+		]
+	};
+
 	const mapper = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
-	const actual = mapObject(object, mapper, {deep: true});
-	t.deepEqual(actual, expected);
+	const actualDeepTrue = mapObject(object, mapper, {deep: true});
+	const actualDeepFalse = mapObject(object, mapper, {deep: false});
+	const actualDeepFunction = mapObject(object, mapper, {deep: k => k !== 'object'});
+	t.deepEqual(actualDeepTrue, expectedDeepTrue);
+	t.deepEqual(actualDeepFalse, expectedDeepFalse);
+	t.deepEqual(actualDeepFunction, expectedDeepFunction);
 });
 
 test('nested arrays', t => {

@@ -45,10 +45,15 @@ Type: `object`
 
 ##### deep
 
-Type: `boolean`<br>
+Type: `boolean|Function`<br>
 Default: `false`
 
 Recurse nested objects and objects in arrays.
+
+If using a boolean value it applies to all keys in all nested objects. If using a function
+
+- It has signature `deep(key)`.
+- It must return a single boolean value: `true|false` if the nested object should be mapped
 
 ##### target
 

@@ -1,4 +1,6 @@
 declare namespace mapObject {
+	type DeepOptionFunction = (sourceKey: string) => boolean;
+
 	type Mapper<
 		SourceObjectType extends {[key: string]: any},
 		MappedObjectKeyType extends string,
@@ -15,7 +17,7 @@ declare namespace mapObject {
 
 		@default false
 		*/
-		deep?: boolean;
+		deep?: boolean | DeepOptionFunction;
 
 		/**
 		Target object to map properties on to.
@@ -40,6 +42,7 @@ Map object keys and values into a new object.
 @param source - Source object to copy properties from.
 @param mapper - Mapping function.
 
+@param options? - Any options which can be applied to the operation
 @example
 ```
 import mapObject = require('map-obj');
@@ -47,7 +50,7 @@ import mapObject = require('map-obj');
 const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 //=> {bar: 'foo'}
 ```
-*/
+ */
 declare function mapObject<
 	SourceObjectType extends object,
 	TargetObjectType extends {[key: string]: any},
