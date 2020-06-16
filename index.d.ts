@@ -28,7 +28,7 @@ declare namespace mapObject {
 	}
 
 	interface DeepOptions extends Options {
-		deep: true;
+		deep: true | DeepOptionFunction;
 	}
 
 	interface TargetOptions<TargetObjectType extends {[key: string]: any}> extends Options {
