@@ -50,7 +50,7 @@ import mapObject = require('map-obj');
 const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 //=> {bar: 'foo'}
 ```
- */
+*/
 declare function mapObject<
 	SourceObjectType extends object,
 	TargetObjectType extends {[key: string]: any},
