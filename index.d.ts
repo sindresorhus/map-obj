@@ -1,5 +1,5 @@
 declare namespace mapObject {
-	type DeepOptionFunction = (sourceKey: string) => boolean;
+	type DeepKeyFilter = (sourceKey: string) => boolean;
 
 	type Mapper<
 		SourceObjectType extends {[key: string]: any},
@@ -17,7 +17,7 @@ declare namespace mapObject {
 
 		@default false
 		*/
-		deep?: boolean | DeepOptionFunction;
+		deep?: boolean | DeepKeyFilter;
 
 		/**
 		Target object to map properties on to.
@@ -28,7 +28,7 @@ declare namespace mapObject {
 	}
 
 	interface DeepOptions extends Options {
-		deep: true | DeepOptionFunction;
+		deep: true | DeepKeyFilter;
 	}
 
 	interface TargetOptions<TargetObjectType extends {[key: string]: any}> extends Options {

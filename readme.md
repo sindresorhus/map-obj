@@ -45,15 +45,15 @@ Type: `object`
 
 ##### deep
 
-Type: `boolean|Function`<br>
+Type: `boolean|DeepKeyFilter`<br>
 Default: `false`
 
 Recurse nested objects and objects in arrays.
 
-If using a boolean value it applies to all keys in all nested objects. If using a function
+If using a boolean value it applies to all keys in all nested objects. If using a `DeepKeyFilter`
 
-- It has signature `deep(key)`.
-- It must return a single boolean value: `true|false` if the nested object should be mapped
+- It has signature `deep(sourceKey)`.
+- It must return a single boolean value: `true|false` if the nested object belonging to `sourceKey` should be mapped
 
 ##### target
 
