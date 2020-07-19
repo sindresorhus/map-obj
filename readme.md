@@ -45,7 +45,7 @@ Type: `object`
 
 ##### deep
 
-Type: `boolean|DeepKeyFilter`<br>
+Type: `boolean | Function`<br>
 Default: `false`
 
 Recurse nested objects and objects in arrays.
