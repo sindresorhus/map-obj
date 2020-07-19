@@ -42,7 +42,6 @@ Map object keys and values into a new object.
 @param source - Source object to copy properties from.
 @param mapper - Mapping function.
 
-@param options? - Any options which can be applied to the operation
 @example
 ```
 import mapObject = require('map-obj');
