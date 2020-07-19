@@ -30,7 +30,8 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 		return mapArray(object);
 	}
 
-	const deepOption = (options.deep instanceof Function) ? options.deep : () => options.deep;
+	const deepOption = typeof options.deep === 'function' ? options.deep : () => options.deep;
+
 	for (const [key, value] of Object.entries(object)) {
 		let [newKey, newValue] = mapper(key, value, object);
 
