@@ -31,9 +31,18 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	}
 
 	for (const [key, value] of Object.entries(object)) {
-		let [newKey, newValue] = mapper(key, value, object);
+		let [newKey, newValue, mapperOptions = {shouldRecurse: true}] = mapper(key, value, object);
 
-		if (options.deep && isObjectCustom(newValue)) {
+		if (typeof mapperOptions.shouldRecurse !== 'boolean') {
+			throw new TypeError(`Expected mapperOptions.shouldRecurse to be a boolean, got \`${mapperOptions.shouldRecurse}\` (${typeof mapperOptions.shouldRecurse})`);
+		}
+
+		const shouldRecurse =
+			options.deep &&
+			mapperOptions.shouldRecurse === true &&
+			isObjectCustom(newValue);
+
+		if (shouldRecurse) {
 			newValue = Array.isArray(newValue) ?
 				mapArray(newValue) :
 				mapObject(newValue, mapper, options, isSeen);

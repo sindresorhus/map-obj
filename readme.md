@@ -32,12 +32,19 @@ Source object to copy properties from.
 
 #### mapper
 
-Type: `Function`
+Type: `Function`<br>
+Signature: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?]`
 
-Mapping function.
+##### mapperOptions
 
-- It has signature `mapper(sourceKey, sourceValue, source)`.
-- It must return a two item array: `[targetKey, targetValue]`.
+Type: `object`<br>
+Default: `{shouldRecurse: true}`
+
+######  shouldRecurse
+
+Type: `boolean`<br>
+
+Stop recursing down the tree if `false`.
 
 #### options
 
