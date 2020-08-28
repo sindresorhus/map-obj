@@ -48,12 +48,30 @@ Type: `object`
 Type: `boolean | Function`<br>
 Default: `false`
 
-Recurse nested objects and objects in arrays.
+Recursing behaviour for nested objects and objects in arrays
 
-If using a boolean value it applies to all keys in all nested objects. If using a `DeepKeyFilter`
+Deep Value can be boolean:
 
-- It has signature `deep(sourceKey)`.
-- It must return a single boolean value: `true|false` if the nested object belonging to `sourceKey` should be mapped
+- If `true`, it recurses all nested objects and objects in arrays.
+
+Or a `DeepKeyFilter` function which has the following properties:
+
+- It has signature `deepKeyFilter(sourceKey: string)`.
+- It must return a `boolean`. Returning `true` states the value related to the currently iterated `sourceKey`
+    shall be recursed if it is a nested object, false otherwise.
+
+Example:
+
+```js
+const mapObject = require('map-obj');
+const newObject = mapObject(
+    {foo: {bar: 42}, lorem: {ipsum: 'dolor'}},
+    (key, value) => [key.toUpperCase(), value],
+    {deep: key => key === 'foo'} // Recurses only on nested objects of key "foo"
+);
+
+// => { FOO: { BAR: 42 }, { LOREM: { ipsum: 'dolor' } } }
+```
 
 ##### target
 
