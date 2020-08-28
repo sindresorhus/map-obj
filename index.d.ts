@@ -1,4 +1,8 @@
 declare namespace mapObject {
+	/**
+	 * Function which can be optionally used to indicate by returning true, if the value related to the given
+	 * 	`sourceKey` shall be recursed (in case it is a nested object), false otherwise.
+	 */
 	type DeepKeyFilter = (sourceKey: string) => boolean;
 
 	type Mapper<
