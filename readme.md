@@ -15,7 +15,7 @@ $ npm install map-obj
 ```js
 const mapObject = require('map-obj');
 
-const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
+const newObject = mapObject({foo: 'bar'}, (key, value) => [key, value]);
 //=> {bar: 'foo'}
 ```
 
