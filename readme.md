@@ -32,8 +32,7 @@ Source object to copy properties from.
 
 #### mapper
 
-Type: `Function`<br>
-Signature: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?]`
+Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?]`
 
 ##### mapperOptions
 
