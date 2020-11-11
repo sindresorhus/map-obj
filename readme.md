@@ -57,8 +57,7 @@ Deep Value can be boolean:
 Or a `DeepKeyFilter` function which has the following properties:
 
 - It has signature `deepKeyFilter(sourceKey: string)`.
-- It must return a `boolean`. Returning `true` states the value related to the currently iterated `sourceKey`
-    shall be recursed if it is a nested object, false otherwise.
+- It must return a `boolean`. Returning `true` states the value related to the currently iterated `sourceKey` shall be recursed if it is a nested object, false otherwise.
 
 Example:
 
