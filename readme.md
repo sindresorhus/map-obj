@@ -48,7 +48,7 @@ Type: `object`
 Type: `boolean | Function`<br>
 Default: `false`
 
-Recursing behaviour for nested objects and objects in arrays
+Recursing behavior for nested objects and objects in arrays.
 
 Deep Value can be boolean:
 
