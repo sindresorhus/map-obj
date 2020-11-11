@@ -63,11 +63,10 @@ Example:
 
 ```js
 const mapObject = require('map-obj');
-
 const newObject = mapObject(
-    {foo: {bar: 42}, lorem: {ipsum: 'dolor'}},
-    (key, value) => [key.toUpperCase(), value],
-    {deep: key => key === 'foo'} // Recurses only on nested objects of key `foo`.
+	{foo: {bar: 42}, lorem: {ipsum: 'dolor'}},
+	(key, value) => [key.toUpperCase(), value],
+	{deep: key => key === 'foo'} // Recurses only on nested objects of key `foo`.
 );
 /*
 {
