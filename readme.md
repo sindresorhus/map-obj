@@ -50,14 +50,14 @@ Default: `false`
 
 Recursing behavior for nested objects and objects in arrays.
 
-Deep Value can be boolean:
+The value of `deep` can be boolean:
 
 - If `true`, it recurses all nested objects and objects in arrays.
 
 Or a function which has the following properties:
 
-- It has signature `(sourceKey: string) => boolean`.
-- Returning `true` states the value related to the currently iterated `sourceKey` shall be recursed if it is a nested object, false otherwise.
+- It has signature `(objectKey: string) => boolean`.
+- Returning `true` states the value related to the currently iterated `objectKey` shall be recursed (if the corresponding value is a nested object), false otherwise.
 
 Example:
 
