@@ -73,7 +73,7 @@ test('deep option', t => {
 	const mapper = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
 	const actualDeepTrue = mapObject(object, mapper, {deep: true});
 	const actualDeepFalse = mapObject(object, mapper, {deep: false});
-	const actualDeepFunction = mapObject(object, mapper, {deep: k => k !== 'object'});
+	const actualDeepFunction = mapObject(object, mapper, {deep: key => key !== 'object'});
 	t.deepEqual(actualDeepTrue, expectedDeepTrue);
 	t.deepEqual(actualDeepFalse, expectedDeepFalse);
 	t.deepEqual(actualDeepFunction, expectedDeepFunction);
