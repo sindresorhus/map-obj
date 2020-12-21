@@ -56,7 +56,7 @@ The value of `deep` can be boolean:
 
 Or a function which has the following properties:
 
-- It has signature `(objectKey: string) => boolean`.
+- It has the signature `(objectKey: string) => boolean`.
 - Returning `true` states the value related to the currently iterated `objectKey` shall be recursed (if the corresponding value is a nested object), false otherwise.
 
 Example:
