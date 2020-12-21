@@ -1,6 +1,6 @@
 declare namespace mapObject {
 	/**
-	Function which can be optionally used to indicate by returning true, if the value related to the given `objectKey` shall be recursed (in case it is a nested object), false otherwise.
+	Function which indicates by returning true, if the value related to the currently iterated `objectKey` shall be recursed (if the corresponding value is a nested object), false otherwise.
 
 	@param objectKey - Any key of the object to map.
 	@returns Whether it should recurse for the currently given `objectKey`.
@@ -14,16 +14,17 @@ declare namespace mapObject {
         (key, value) => [key.toUpperCase(), value],
         {deep: key => key === 'foo'} // Recurses only on nested objects of key `foo`.
     );
-    // => {
-    // 	FOO: {
-    // 		BAR: 42
-    // 	},
-    // 	{
-    // 		LOREM: {
-    // 			ipsum: 'dolor'
-    // 		}
-    // 	}
-    // }
+	// =>
+	//	{
+	//		FOO: {
+	//			BAR: 42
+	//		},
+	//		{
+	//			LOREM: {
+	//				ipsum: 'dolor'
+	//			}
+	//		}
+	//	}
 	```
     */
 	type DeepKeyFilter = (objectKey: string) => boolean;
