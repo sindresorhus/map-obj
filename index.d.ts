@@ -2,12 +2,13 @@ declare namespace mapObject {
 	/**
 	Function which can be optionally used to indicate by returning true, if the value related to the given `objectKey` shall be recursed (in case it is a nested object), false otherwise.
 
-	@param objectKey - Any key of the object to map
-	@returns true if mapObject should recurse for the currently given `objectKey`
+	@param objectKey - Any key of the object to map.
+	@returns Whether it should recurse for the currently given `objectKey`.
 
 	@example
-    ```js
-    const mapObject = require('map-obj');
+    ```
+    import mapObject = require('map-obj');
+
     const newObject = mapObject(
         {foo: {bar: 42}, lorem: {ipsum: 'dolor'}},
         (key, value) => [key.toUpperCase(), value],
