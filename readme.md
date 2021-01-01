@@ -1,4 +1,4 @@
-# map-obj [![Build Status](https://travis-ci.org/sindresorhus/map-obj.svg?branch=master)](https://travis-ci.org/sindresorhus/map-obj)
+# map-obj
 
 > Map object keys and values into a new object
 
