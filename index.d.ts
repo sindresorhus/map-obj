@@ -1,4 +1,34 @@
 declare namespace mapObject {
+	/**
+	Function which indicates by returning true, if the value related to the currently iterated `objectKey` shall be recursed (if the corresponding value is a nested object), false otherwise.
+
+	@param objectKey - Any key of the object to map.
+	@returns Whether it should recurse for the currently given `objectKey`.
+
+	@example
+    ```
+    import mapObject = require('map-obj');
+
+    const newObject = mapObject(
+        {foo: {bar: 42}, lorem: {ipsum: 'dolor'}},
+        (key, value) => [key.toUpperCase(), value],
+        {deep: key => key === 'foo'} // Recurses only on nested objects of key `foo`.
+    );
+	// =>
+	//	{
+	//		FOO: {
+	//			BAR: 42
+	//		},
+	//		{
+	//			LOREM: {
+	//				ipsum: 'dolor'
+	//			}
+	//		}
+	//	}
+	```
+    */
+	type DeepKeyFilter = (objectKey: string) => boolean;
+
 	type Mapper<
 		SourceObjectType extends {[key: string]: any},
 		MappedObjectKeyType extends string,
@@ -15,7 +45,7 @@ declare namespace mapObject {
 
 		@default false
 		*/
-		deep?: boolean;
+		deep?: boolean | DeepKeyFilter;
 
 		/**
 		Target object to map properties on to.
@@ -26,7 +56,7 @@ declare namespace mapObject {
 	}
 
 	interface DeepOptions extends Options {
-		deep: true;
+		deep: true | DeepKeyFilter;
 	}
 
 	interface TargetOptions<TargetObjectType extends {[key: string]: any}> extends Options {

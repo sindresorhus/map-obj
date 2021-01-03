@@ -45,10 +45,43 @@ Type: `object`
 
 ##### deep
 
-Type: `boolean`<br>
+Type: `boolean | Function`<br>
 Default: `false`
 
-Recurse nested objects and objects in arrays.
+Recursing behavior for nested objects and objects in arrays.
+
+The value of `deep` can be boolean:
+
+- If `true`, it recurses all nested objects and objects in arrays.
+
+Or a function which has the following properties:
+
+- It has the signature `(objectKey: string) => boolean`.
+- Returning `true` states the value related to the currently iterated `objectKey` shall be recursed (if the corresponding value is a nested object), false otherwise.
+
+Example:
+
+```js
+const mapObject = require('map-obj');
+
+const newObject = mapObject(
+	{foo: {bar: 42}, lorem: {ipsum: 'dolor'}},
+	(key, value) => [key.toUpperCase(), value],
+	{deep: key => key === 'foo'} // Recurses only on nested objects of key `foo`.
+);
+/*
+{
+	FOO: {
+		BAR: 42
+	},
+	{
+		LOREM: {
+			ipsum: 'dolor'
+		}
+	}
+}
+*/
+```
 
 ##### target
 
