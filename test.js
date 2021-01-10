@@ -47,6 +47,47 @@ test('deep option', t => {
 	t.deepEqual(actual, expected);
 });
 
+test('shouldRecurse mapper option', t => {
+	const object = {
+		one: 1,
+		object: {
+			two: 2,
+			three: 3
+		},
+		array: [
+			{
+				four: 4
+			},
+			5
+		]
+	};
+
+	const expected = {
+		one: 2,
+		object: {
+			two: 2,
+			three: 3
+		},
+		array: [
+			{
+				four: 8
+			},
+			5
+		]
+	};
+
+	const mapper = (key, value) => {
+		if (key === 'object') {
+			return [key, value, {shouldRecurse: false}];
+		}
+
+		return [key, typeof value === 'number' ? value * 2 : value];
+	};
+
+	const actual = mapObject(object, mapper, {deep: true});
+	t.deepEqual(actual, expected);
+});
+
 test('nested arrays', t => {
 	const object = {
 		array: [

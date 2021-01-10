@@ -7,7 +7,7 @@ declare namespace mapObject {
 		sourceKey: keyof SourceObjectType,
 		sourceValue: SourceObjectType[keyof SourceObjectType],
 		source: SourceObjectType
-	) => [MappedObjectKeyType, MappedObjectValueType];
+	) => [MappedObjectKeyType, MappedObjectValueType, mapObject.MapperOptions?];
 
 	interface Options {
 		/**
@@ -31,6 +31,15 @@ declare namespace mapObject {
 
 	interface TargetOptions<TargetObjectType extends {[key: string]: any}> extends Options {
 		target: TargetObjectType;
+	}
+
+	interface MapperOptions {
+		/**
+		Whether `targetValue` should be recursed. Requires `deep: true`.
+
+		@default true
+		*/
+		shouldRecurse?: boolean;
 	}
 }
 
