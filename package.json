@@ -4,10 +4,11 @@
 	"description": "Map object keys and values into a new object",
 	"license": "MIT",
 	"repository": "sindresorhus/map-obj",
+	"funding": "https://github.com/sponsors/sindresorhus",
 	"author": {
 		"name": "Sindre Sorhus",
 		"email": "sindresorhus@gmail.com",
-		"url": "sindresorhus.com"
+		"url": "https://sindresorhus.com"
 	},
 	"engines": {
 		"node": ">=8"

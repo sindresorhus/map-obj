@@ -2,13 +2,11 @@
 
 > Map object keys and values into a new object
 
-
 ## Install
 
 ```
 $ npm install map-obj
 ```
-
 
 ## Usage
 
@@ -18,7 +16,6 @@ const mapObject = require('map-obj');
 const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 //=> {bar: 'foo'}
 ```
-
 
 ## API
 
@@ -51,23 +48,21 @@ Type: `object`
 
 ##### deep
 
-Type: `boolean`<br>
+Type: `boolean`\
 Default: `false`
 
 Recurse nested objects and objects in arrays.
 
 ##### target
 
-Type: `object`<br>
+Type: `object`\
 Default: `{}`
 
 Target object to map properties on to.
 
-
 ## Related
 
 - [filter-obj](https://github.com/sindresorhus/filter-obj) - Filter object keys and values into a new object
-
 
 ---
 

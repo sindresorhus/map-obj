@@ -1,5 +1,5 @@
-import {expectType} from 'tsd';
-import mapObject = require('.');
+import {expectType, expectAssignable} from 'tsd';
+import mapObject = require('./index.js');
 
 const options: mapObject.Options = {};
 
@@ -30,7 +30,7 @@ const object3 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
 	deep: true,
 	target: {bar: 'baz' as const}
 });
-expectType<{[key: string]: unknown}>(object3);
+expectAssignable<{[key: string]: unknown}>(object3);
 expectType<'baz'>(object3.bar);
 
 mapObject({foo: 'bar'}, (key, value) => [value, key, {shouldRecurse: false}]);
