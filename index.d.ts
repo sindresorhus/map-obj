@@ -7,7 +7,11 @@ declare namespace mapObject {
 		sourceKey: keyof SourceObjectType,
 		sourceValue: SourceObjectType[keyof SourceObjectType],
 		source: SourceObjectType
-	) => [MappedObjectKeyType, MappedObjectValueType, mapObject.MapperOptions?];
+	) => [
+		targetKey: MappedObjectKeyType,
+		targetValue: MappedObjectValueType,
+		mapperOptions?: mapObject.MapperOptions
+	];
 
 	interface Options {
 		/**
