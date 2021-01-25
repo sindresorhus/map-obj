@@ -15,6 +15,12 @@ const mapObject = require('map-obj');
 
 const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 //=> {bar: 'foo'}
+
+const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value]);
+//=> {foo: true, bar: {bAz: true}}
+
+const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value], {deep: true});
+//=> {foo: true, bar: {baz: true}}
 ```
 
 ## API
