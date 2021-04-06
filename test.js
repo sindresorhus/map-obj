@@ -152,3 +152,15 @@ test('validates input', t => {
 		mapObject(1, () => {});
 	}, TypeError);
 });
+
+test.failing('identity function preserves __proto__ keys', t => {
+	const input = {['__proto__']: {one: 1}};
+	t.deepEqual(mapObject(input, (key, value) => [key, value]), input);
+});
+
+test.failing('mapper can produce __proto__ keys', t => {
+	t.deepEqual(
+		mapObject({proto: {one: 1}}, (key, value) => [`__${key}__`, value]),
+		{['__proto__']: {one: 1}}
+	);
+});
