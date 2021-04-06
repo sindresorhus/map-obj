@@ -165,7 +165,7 @@ test.failing('mapper can produce __proto__ keys', t => {
 	);
 });
 
-test.failing('__proto__ keys are safely dropped', t => {
+test('__proto__ keys are safely dropped', t => {
 	const input = {['__proto__']: {one: 1}};
 	const output = mapObject(input, (key, value) => [key, value]);
 	t.deepEqual(output, {});
