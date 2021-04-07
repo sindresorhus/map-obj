@@ -157,6 +157,7 @@ test('__proto__ keys are safely dropped', t => {
 	const input = {['__proto__']: {one: 1}};
 	const output = mapObject(input, (key, value) => [key, value]);
 	t.deepEqual(output, {});
+
 	// AVA's equality checking isn't quite strict enough to catch the difference
 	// between plain objects as prototypes and Object.prototype, so we also check
 	// the prototype by identity
