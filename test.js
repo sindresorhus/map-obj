@@ -153,14 +153,13 @@ test('validates input', t => {
 	}, TypeError);
 });
 
-test.failing('identity function preserves __proto__ keys', t => {
+test('__proto__ keys are safely dropped', t => {
 	const input = {['__proto__']: {one: 1}};
-	t.deepEqual(mapObject(input, (key, value) => [key, value]), input);
-});
+	const output = mapObject(input, (key, value) => [key, value]);
+	t.deepEqual(output, {});
 
-test.failing('mapper can produce __proto__ keys', t => {
-	t.deepEqual(
-		mapObject({proto: {one: 1}}, (key, value) => [`__${key}__`, value]),
-		{['__proto__']: {one: 1}}
-	);
+	// AVA's equality checking isn't quite strict enough to catch the difference
+	// between plain objects as prototypes and Object.prototype, so we also check
+	// the prototype by identity
+	t.is(Object.getPrototypeOf(output), Object.prototype);
 });
