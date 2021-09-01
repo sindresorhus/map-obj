@@ -163,3 +163,13 @@ test('__proto__ keys are safely dropped', t => {
 	// the prototype by identity
 	t.is(Object.getPrototypeOf(output), Object.prototype);
 });
+
+test('filter option', t => {
+	const req = {one: 1, two: 2};
+	const opt = {
+		filter: (key, value) => value === 1
+	};
+
+	t.is(mapObject(req, opt), {two: 2});
+});
+

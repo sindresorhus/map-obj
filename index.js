@@ -25,12 +25,18 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	const {target} = options;
 	delete options.target;
 
+	const {filter} = options;
+
 	const mapArray = array => array.map(element => isObjectCustom(element) ? mapObject(element, mapper, options, isSeen) : element);
 	if (Array.isArray(object)) {
 		return mapArray(object);
 	}
 
 	for (const [key, value] of Object.entries(object)) {
+		If (filter && typeof filter === 'function' && filter(key, value) === false) {
+			continue;
+		}
+
 		let [newKey, newValue, {shouldRecurse = true} = {}] = mapper(key, value, object);
 
 		// Drop `__proto__` keys.
