@@ -69,6 +69,21 @@ Default: `{}`
 
 Target object to map properties on to.
 
+### mapObject.mapObjectSkip
+
+Return this value from a `mapper` function remove a key from an object.
+
+```js
+const mapObject = require('map-obj');
+
+const object = {one: 1, two: 2}
+const mapper = (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip
+const result = mapObject(object, mapper);
+
+console.log(result);
+//=> {one: 1}
+```
+
 ## Related
 
 - [filter-obj](https://github.com/sindresorhus/filter-obj) - Filter object keys and values into a new object
