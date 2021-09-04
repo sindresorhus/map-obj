@@ -34,3 +34,5 @@ expectAssignable<{[key: string]: unknown}>(object3);
 expectType<'baz'>(object3.bar);
 
 mapObject({foo: 'bar'}, (key, value) => [value, key, {shouldRecurse: false}]);
+
+mapObject({foo: 'bar'}, () => mapObject.mapObjSkip);

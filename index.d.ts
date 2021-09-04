@@ -11,7 +11,7 @@ declare namespace mapObject {
 		targetKey: MappedObjectKeyType,
 		targetValue: MappedObjectValueType,
 		mapperOptions?: mapObject.MapperOptions
-	];
+	] | mapObject.mapObjSkip;
 
 	interface Options {
 		/**
@@ -45,6 +45,8 @@ declare namespace mapObject {
 		*/
 		shouldRecurse?: boolean;
 	}
+
+	export type mapObjSkip = symbol
 }
 
 /**
@@ -65,6 +67,9 @@ const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.
 
 const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value], {deep: true});
 //=> {foo: true, bar: {baz: true}}
+
+const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObject.mapObjSkip);
+//=> {one: 1}
 ```
 */
 declare function mapObject<
