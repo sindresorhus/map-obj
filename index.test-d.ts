@@ -35,4 +35,4 @@ expectType<'baz'>(object3.bar);
 
 mapObject({foo: 'bar'}, (key, value) => [value, key, {shouldRecurse: false}]);
 
-mapObject({foo: 'bar'}, () => mapObject.mapObjSkip);
+mapObject({foo: 'bar'}, () => mapObject.mapObjectSkip);

@@ -174,7 +174,7 @@ test('remove keys (#36)', t => {
 		one: 1
 	};
 
-	const mapper = (key, value) => value === 1 ? [key, value] : mapObject.mapObjSkip;
+	const mapper = (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip;
 	const actual = mapObject(object, mapper, {deep: true});
 	t.deepEqual(actual, expected);
 });

@@ -1,7 +1,7 @@
 'use strict';
 
 const isObject = value => typeof value === 'object' && value !== null;
-const mapObjSkip = Symbol('skip');
+const mapObjectSkip = Symbol('skip');
 
 // Customized for this use-case
 const isObjectCustom = value =>
@@ -34,7 +34,7 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	for (const [key, value] of Object.entries(object)) {
 		const mapResult = mapper(key, value, object);
 
-		if (mapResult === mapObjSkip) {
+		if (mapResult === mapObjectSkip) {
 			continue;
 		}
 
@@ -65,4 +65,4 @@ module.exports = (object, mapper, options) => {
 	return mapObject(object, mapper, options);
 };
 
-module.exports.mapObjSkip = mapObjSkip;
+module.exports.mapObjectSkip = mapObjectSkip;

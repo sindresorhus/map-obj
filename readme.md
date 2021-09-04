@@ -22,7 +22,7 @@ const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.
 const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value], {deep: true});
 //=> {foo: true, bar: {baz: true}}
 
-const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObject.mapObjSkip);
+const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip);
 //=> {one: 1}
 ```
 
@@ -38,7 +38,7 @@ Source object to copy properties from.
 
 #### mapper
 
-Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?] | mapObject.mapObjSkip`
+Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?] | mapObject.mapObjectSkip`
 
 Mapping function.
 
