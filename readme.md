@@ -71,7 +71,7 @@ Target object to map properties on to.
 
 ### mapObject.mapObjectSkip
 
-Return this value from a `mapper` function remove a key from an object.
+Return this value from a `mapper` function to remove a key from an object.
 
 ```js
 const mapObject = require('map-obj');
