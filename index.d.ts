@@ -11,7 +11,7 @@ declare namespace mapObject {
 		targetKey: MappedObjectKeyType,
 		targetValue: MappedObjectValueType,
 		mapperOptions?: mapObject.MapperOptions
-	] | mapObject.mapObjectSkip;
+	] | typeof mapObject.mapObjectSkip;
 
 	interface Options {
 		/**
@@ -46,8 +46,27 @@ declare namespace mapObject {
 		shouldRecurse?: boolean;
 	}
 
-	export type mapObjectSkip = symbol
+
+	/**
+	Return this value from a `mapper` function to remove a key from an object.
+
+	```js
+	const mapObject = require('map-obj');
+
+	const object = {one: 1, two: 2}
+	const mapper = (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip
+	const result = mapObject(object, mapper);
+
+	console.log(result);
+	//=> {one: 1}
+	```
+	*/
+	const mapObjectSkip: typeof UniqueSymbol
 }
+
+// unique symbol cannot be declared in a namespace directly, so we declare it top-level
+// See: https://github.com/sindresorhus/map-obj/pull/38#discussion_r702396878
+declare const UniqueSymbol: unique symbol;
 
 /**
 Map object keys and values into a new object.
