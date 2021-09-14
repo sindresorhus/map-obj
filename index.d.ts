@@ -60,12 +60,12 @@ declare namespace mapObject {
 	//=> {one: 1}
 	```
 	*/
-	const mapObjectSkip: typeof UniqueSymbol
+	const mapObjectSkip: typeof uniqueSymbol
 }
 
 // unique symbol cannot be declared in a namespace directly, so we declare it top-level
 // See: https://github.com/sindresorhus/map-obj/pull/38#discussion_r702396878
-declare const UniqueSymbol: unique symbol;
+declare const uniqueSymbol: unique symbol;
 
 /**
 Map object keys and values into a new object.
