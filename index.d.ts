@@ -46,7 +46,6 @@ declare namespace mapObject {
 		shouldRecurse?: boolean;
 	}
 
-
 	/**
 	Return this value from a `mapper` function to remove a key from an object.
 
