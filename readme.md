@@ -4,8 +4,8 @@
 
 ## Install
 
-```
-$ npm install map-obj
+```sh
+npm install map-obj
 ```
 
 ## Usage
@@ -44,12 +44,16 @@ Mapping function.
 
 ##### mapperOptions
 
+Type: `object`
+
 ###### shouldRecurse
 
 Type: `boolean`\
 Default: `true`
 
-Whether `targetValue` should be recursed. Requires `deep: true`.
+Whether `targetValue` should be recursed.
+
+Requires `deep: true`.
 
 #### options
 

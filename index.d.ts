@@ -1,3 +1,7 @@
+// Unique symbol cannot be declared in a namespace directly, so we declare it top-level
+// See: https://github.com/sindresorhus/map-obj/pull/38#discussion_r702396878
+declare const skipSymbol: unique symbol;
+
 declare namespace mapObject {
 	type Mapper<
 		SourceObjectType extends {[key: string]: any},
@@ -39,17 +43,20 @@ declare namespace mapObject {
 
 	interface MapperOptions {
 		/**
-		Whether `targetValue` should be recursed. Requires `deep: true`.
+		Whether `targetValue` should be recursed.
+
+		Requires `deep: true`.
 
 		@default true
 		*/
-		shouldRecurse?: boolean;
+		readonly shouldRecurse?: boolean;
 	}
 
 	/**
 	Return this value from a `mapper` function to remove a key from an object.
 
-	```js
+	@example
+	```
 	const mapObject = require('map-obj');
 
 	const object = {one: 1, two: 2}
@@ -60,12 +67,8 @@ declare namespace mapObject {
 	//=> {one: 1}
 	```
 	*/
-	const mapObjectSkip: typeof uniqueSymbol
+	const mapObjectSkip: typeof skipSymbol
 }
-
-// unique symbol cannot be declared in a namespace directly, so we declare it top-level
-// See: https://github.com/sindresorhus/map-obj/pull/38#discussion_r702396878
-declare const uniqueSymbol: unique symbol;
 
 /**
 Map object keys and values into a new object.
