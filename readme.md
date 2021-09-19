@@ -21,6 +21,9 @@ const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.
 
 const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value], {deep: true});
 //=> {foo: true, bar: {baz: true}}
+
+const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip);
+//=> {one: 1}
 ```
 
 ## API
@@ -35,7 +38,7 @@ Source object to copy properties from.
 
 #### mapper
 
-Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?]`
+Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?] | mapObject.mapObjectSkip`
 
 Mapping function.
 
@@ -65,6 +68,21 @@ Type: `object`\
 Default: `{}`
 
 Target object to map properties on to.
+
+### mapObject.mapObjectSkip
+
+Return this value from a `mapper` function to exclude the key from the new object.
+
+```js
+const mapObject = require('map-obj');
+
+const object = {one: 1, two: 2}
+const mapper = (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip
+const result = mapObject(object, mapper);
+
+console.log(result);
+//=> {one: 1}
+```
 
 ## Related
 

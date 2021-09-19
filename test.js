@@ -163,3 +163,18 @@ test('__proto__ keys are safely dropped', t => {
 	// the prototype by identity
 	t.is(Object.getPrototypeOf(output), Object.prototype);
 });
+
+test('remove keys (#36)', t => {
+	const object = {
+		one: 1,
+		two: 2
+	};
+
+	const expected = {
+		one: 1
+	};
+
+	const mapper = (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip;
+	const actual = mapObject(object, mapper, {deep: true});
+	t.deepEqual(actual, expected);
+});
