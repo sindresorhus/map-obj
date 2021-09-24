@@ -10,7 +10,8 @@ declare namespace mapObject {
 	> = (
 		sourceKey: keyof SourceObjectType,
 		sourceValue: SourceObjectType[keyof SourceObjectType],
-		source: SourceObjectType
+		source: SourceObjectType,
+		path: MappedObjectKeyType[]
 	) => [
 		targetKey: MappedObjectKeyType,
 		targetValue: MappedObjectValueType,

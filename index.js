@@ -33,7 +33,7 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap(), path = []) =
 
 	for (const [key, value] of Object.entries(object)) {
 		path.push(key);
-		const mapResult = mapper(key, value, object);
+		const mapResult = mapper(key, value, object, path);
 
 		if (mapResult === mapObjectSkip) {
 			path.pop();
