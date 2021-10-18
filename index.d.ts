@@ -1,84 +1,78 @@
-// Unique symbol cannot be declared in a namespace directly, so we declare it top-level
-// See: https://github.com/sindresorhus/map-obj/pull/38#discussion_r702396878
-declare const skipSymbol: unique symbol;
+/**
+Return this value from a `mapper` function to remove a key from an object.
 
-declare namespace mapObject {
-	type Mapper<
-		SourceObjectType extends {[key: string]: any},
-		MappedObjectKeyType extends string,
-		MappedObjectValueType
-	> = (
-		sourceKey: keyof SourceObjectType,
-		sourceValue: SourceObjectType[keyof SourceObjectType],
-		source: SourceObjectType
-	) => [
-		targetKey: MappedObjectKeyType,
-		targetValue: MappedObjectValueType,
-		mapperOptions?: mapObject.MapperOptions
-	] | typeof mapObject.mapObjectSkip;
+@example
+```
+import mapObject, {mapObjectSkip} from 'map-obj';
 
-	interface Options {
-		/**
-		Recurse nested objects and objects in arrays.
+const object = {one: 1, two: 2}
+const mapper = (key, value) => value === 1 ? [key, value] : mapObjectSkip
+const result = mapObject(object, mapper);
 
-		@default false
-		*/
-		deep?: boolean;
+console.log(result);
+//=> {one: 1}
+```
+*/
+export const mapObjectSkip: unique symbol;
 
-		/**
-		Target object to map properties on to.
+export type Mapper<
+	SourceObjectType extends Record<string, any>,
+	MappedObjectKeyType extends string,
+	MappedObjectValueType,
+> = (
+	sourceKey: keyof SourceObjectType,
+	sourceValue: SourceObjectType[keyof SourceObjectType],
+	source: SourceObjectType
+) => [
+	targetKey: MappedObjectKeyType,
+	targetValue: MappedObjectValueType,
+	mapperOptions?: MapperOptions,
+] | typeof mapObjectSkip;
 
-		@default {}
-		*/
-		target?: {[key: string]: any};
-	}
+export interface Options {
+	/**
+	Recurse nested objects and objects in arrays.
 
-	interface DeepOptions extends Options {
-		deep: true;
-	}
-
-	interface TargetOptions<TargetObjectType extends {[key: string]: any}> extends Options {
-		target: TargetObjectType;
-	}
-
-	interface MapperOptions {
-		/**
-		Whether `targetValue` should be recursed.
-
-		Requires `deep: true`.
-
-		@default true
-		*/
-		readonly shouldRecurse?: boolean;
-	}
+	@default false
+	*/
+	readonly deep?: boolean;
 
 	/**
-	Return this value from a `mapper` function to remove a key from an object.
+	The target object to map properties on to.
 
-	@example
-	```
-	const mapObject = require('map-obj');
-
-	const object = {one: 1, two: 2}
-	const mapper = (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip
-	const result = mapObject(object, mapper);
-
-	console.log(result);
-	//=> {one: 1}
-	```
+	@default {}
 	*/
-	const mapObjectSkip: typeof skipSymbol
+	readonly target?: Record<string, any>;
+}
+
+export interface DeepOptions extends Options {
+	readonly deep: true;
+}
+
+export interface TargetOptions<TargetObjectType extends Record<string, any>> extends Options {
+	readonly target: TargetObjectType;
+}
+
+export interface MapperOptions {
+	/**
+	Whether `targetValue` should be recursed.
+
+	Requires `deep: true`.
+
+	@default true
+	*/
+	readonly shouldRecurse?: boolean;
 }
 
 /**
 Map object keys and values into a new object.
 
-@param source - Source object to copy properties from.
-@param mapper - Mapping function.
+@param source - The source object to copy properties from.
+@param mapper - A mapping function.
 
 @example
 ```
-import mapObject = require('map-obj');
+import mapObject, {mapObjectSkip} from 'map-obj';
 
 const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 //=> {bar: 'foo'}
@@ -89,63 +83,61 @@ const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.
 const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value], {deep: true});
 //=> {foo: true, bar: {baz: true}}
 
-const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip);
+const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObjectSkip);
 //=> {one: 1}
 ```
 */
-declare function mapObject<
-	SourceObjectType extends object,
-	TargetObjectType extends {[key: string]: any},
+export default function mapObject<
+	SourceObjectType extends Record<string, unknown>,
+	TargetObjectType extends Record<string, any>,
 	MappedObjectKeyType extends string,
-	MappedObjectValueType
+	MappedObjectValueType,
 >(
 	source: SourceObjectType,
-	mapper: mapObject.Mapper<
-		SourceObjectType,
-		MappedObjectKeyType,
-		MappedObjectValueType
-	>,
-	options: mapObject.DeepOptions & mapObject.TargetOptions<TargetObjectType>
-): TargetObjectType & {[key: string]: unknown};
-declare function mapObject<
-	SourceObjectType extends object,
-	MappedObjectKeyType extends string,
+	mapper: Mapper<
+	SourceObjectType,
+	MappedObjectKeyType,
 	MappedObjectValueType
+	>,
+	options: DeepOptions & TargetOptions<TargetObjectType>
+): TargetObjectType & Record<string, unknown>;
+export default function mapObject<
+	SourceObjectType extends Record<string, unknown>,
+	MappedObjectKeyType extends string,
+	MappedObjectValueType,
 >(
 	source: SourceObjectType,
-	mapper: mapObject.Mapper<
-		SourceObjectType,
-		MappedObjectKeyType,
-		MappedObjectValueType
-	>,
-	options: mapObject.DeepOptions
-): {[key: string]: unknown};
-declare function mapObject<
-	SourceObjectType extends {[key: string]: any},
-	TargetObjectType extends {[key: string]: any},
-	MappedObjectKeyType extends string,
+	mapper: Mapper<
+	SourceObjectType,
+	MappedObjectKeyType,
 	MappedObjectValueType
+	>,
+	options: DeepOptions
+): Record<string, unknown>;
+export default function mapObject<
+	SourceObjectType extends Record<string, any>,
+	TargetObjectType extends Record<string, any>,
+	MappedObjectKeyType extends string,
+	MappedObjectValueType,
 >(
 	source: SourceObjectType,
-	mapper: mapObject.Mapper<
-		SourceObjectType,
-		MappedObjectKeyType,
-		MappedObjectValueType
+	mapper: Mapper<
+	SourceObjectType,
+	MappedObjectKeyType,
+	MappedObjectValueType
 	>,
-	options: mapObject.TargetOptions<TargetObjectType>
+	options: TargetOptions<TargetObjectType>
 ): TargetObjectType & {[K in MappedObjectKeyType]: MappedObjectValueType};
-declare function mapObject<
-	SourceObjectType extends {[key: string]: any},
+export default function mapObject<
+	SourceObjectType extends Record<string, any>,
 	MappedObjectKeyType extends string,
-	MappedObjectValueType
+	MappedObjectValueType,
 >(
 	source: SourceObjectType,
-	mapper: mapObject.Mapper<
-		SourceObjectType,
-		MappedObjectKeyType,
-		MappedObjectValueType
+	mapper: Mapper<
+	SourceObjectType,
+	MappedObjectKeyType,
+	MappedObjectValueType
 	>,
-	options?: mapObject.Options
+	options?: Options
 ): {[K in MappedObjectKeyType]: MappedObjectValueType};
-
-export = mapObject;

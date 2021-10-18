@@ -1,5 +1,5 @@
 import test from 'ava';
-import mapObject from '.';
+import mapObject, {mapObjectSkip} from './index.js';
 
 test('main', t => {
 	t.is(mapObject({foo: 'bar'}, key => [key, 'unicorn']).foo, 'unicorn');
@@ -18,28 +18,28 @@ test('deep option', t => {
 		one: 1,
 		object: {
 			two: 2,
-			three: 3
+			three: 3,
 		},
 		array: [
 			{
-				four: 4
+				four: 4,
 			},
-			5
-		]
+			5,
+		],
 	};
 
 	const expected = {
 		one: 2,
 		object: {
 			two: 4,
-			three: 6
+			three: 6,
 		},
 		array: [
 			{
-				four: 8
+				four: 8,
 			},
-			5
-		]
+			5,
+		],
 	};
 
 	const mapper = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
@@ -52,28 +52,28 @@ test('shouldRecurse mapper option', t => {
 		one: 1,
 		object: {
 			two: 2,
-			three: 3
+			three: 3,
 		},
 		array: [
 			{
-				four: 4
+				four: 4,
 			},
-			5
-		]
+			5,
+		],
 	};
 
 	const expected = {
 		one: 2,
 		object: {
 			two: 2,
-			three: 3
+			three: 3,
 		},
 		array: [
 			{
-				four: 8
+				four: 8,
 			},
-			5
-		]
+			5,
+		],
 	};
 
 	const mapper = (key, value) => {
@@ -96,10 +96,10 @@ test('nested arrays', t => {
 				1,
 				2,
 				{
-					a: 3
-				}
-			]
-		]
+					a: 3,
+				},
+			],
+		],
 	};
 
 	const expected = {
@@ -109,10 +109,10 @@ test('nested arrays', t => {
 				1,
 				2,
 				{
-					a: 6
-				}
-			]
-		]
+					a: 6,
+				},
+			],
+		],
 	};
 
 	const mapper = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
@@ -124,8 +124,8 @@ test('handles circular references', t => {
 	const object = {
 		one: 1,
 		array: [
-			2
-		]
+			2,
+		],
 	};
 	object.circular = object;
 	object.array2 = object.array;
@@ -137,8 +137,8 @@ test('handles circular references', t => {
 	const expected = {
 		ONE: 1,
 		ARRAY: [
-			2
-		]
+			2,
+		],
 	};
 	expected.CIRCULAR = expected;
 	expected.ARRAY2 = expected.ARRAY;
@@ -150,7 +150,9 @@ test('handles circular references', t => {
 test('validates input', t => {
 	t.throws(() => {
 		mapObject(1, () => {});
-	}, TypeError);
+	}, {
+		instanceOf: TypeError,
+	});
 });
 
 test('__proto__ keys are safely dropped', t => {
@@ -167,14 +169,14 @@ test('__proto__ keys are safely dropped', t => {
 test('remove keys (#36)', t => {
 	const object = {
 		one: 1,
-		two: 2
+		two: 2,
 	};
 
 	const expected = {
-		one: 1
+		one: 1,
 	};
 
-	const mapper = (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip;
+	const mapper = (key, value) => value === 1 ? [key, value] : mapObjectSkip;
 	const actual = mapObject(object, mapper, {deep: true});
 	t.deepEqual(actual, expected);
 });

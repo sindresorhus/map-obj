@@ -1,20 +1,19 @@
-'use strict';
-
 const isObject = value => typeof value === 'object' && value !== null;
-const mapObjectSkip = Symbol('skip');
 
 // Customized for this use-case
 const isObjectCustom = value =>
-	isObject(value) &&
-	!(value instanceof RegExp) &&
-	!(value instanceof Error) &&
-	!(value instanceof Date);
+	isObject(value)
+	&& !(value instanceof RegExp)
+	&& !(value instanceof Error)
+	&& !(value instanceof Date);
 
-const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
+export const mapObjectSkip = Symbol('mapObjectSkip');
+
+const _mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	options = {
 		deep: false,
 		target: {},
-		...options
+		...options,
 	};
 
 	if (isSeen.has(object)) {
@@ -26,7 +25,7 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	const {target} = options;
 	delete options.target;
 
-	const mapArray = array => array.map(element => isObjectCustom(element) ? mapObject(element, mapper, options, isSeen) : element);
+	const mapArray = array => array.map(element => isObjectCustom(element) ? _mapObject(element, mapper, options, isSeen) : element);
 	if (Array.isArray(object)) {
 		return mapArray(object);
 	}
@@ -46,9 +45,9 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 		}
 
 		if (options.deep && shouldRecurse && isObjectCustom(newValue)) {
-			newValue = Array.isArray(newValue) ?
-				mapArray(newValue) :
-				mapObject(newValue, mapper, options, isSeen);
+			newValue = Array.isArray(newValue)
+				? mapArray(newValue)
+				: _mapObject(newValue, mapper, options, isSeen);
 		}
 
 		target[newKey] = newValue;
@@ -57,12 +56,10 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	return target;
 };
 
-module.exports = (object, mapper, options) => {
+export default function mapObject(object, mapper, options) {
 	if (!isObject(object)) {
 		throw new TypeError(`Expected an object, got \`${object}\` (${typeof object})`);
 	}
 
-	return mapObject(object, mapper, options);
-};
-
-module.exports.mapObjectSkip = mapObjectSkip;
+	return _mapObject(object, mapper, options);
+}

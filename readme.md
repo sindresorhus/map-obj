@@ -11,7 +11,7 @@ npm install map-obj
 ## Usage
 
 ```js
-const mapObject = require('map-obj');
+import mapObject, {mapObjectSkip} from 'map-obj';
 
 const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 //=> {bar: 'foo'}
@@ -22,7 +22,7 @@ const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.
 const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value], {deep: true});
 //=> {foo: true, bar: {baz: true}}
 
-const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip);
+const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObjectSkip);
 //=> {one: 1}
 ```
 
@@ -34,13 +34,13 @@ const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key
 
 Type: `object`
 
-Source object to copy properties from.
+The source object to copy properties from.
 
 #### mapper
 
-Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?] | mapObject.mapObjectSkip`
+Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?] | mapObjectSkip`
 
-Mapping function.
+A mapping function.
 
 ##### mapperOptions
 
@@ -71,17 +71,17 @@ Recurse nested objects and objects in arrays.
 Type: `object`\
 Default: `{}`
 
-Target object to map properties on to.
+The target object to map properties on to.
 
-### mapObject.mapObjectSkip
+### mapObjectSkip
 
 Return this value from a `mapper` function to exclude the key from the new object.
 
 ```js
-const mapObject = require('map-obj');
+import mapObject, {mapObjectSkip} from 'map-obj';
 
 const object = {one: 1, two: 2}
-const mapper = (key, value) => value === 1 ? [key, value] : mapObject.mapObjectSkip
+const mapper = (key, value) => value === 1 ? [key, value] : mapObjectSkip
 const result = mapObject(object, mapper);
 
 console.log(result);
