@@ -62,7 +62,7 @@ export default function mapObject(object, mapper, options) {
 	}
 
 	if (Array.isArray(object)) {
-		throw new TypeError(`Expected an object, got an array`);
+		throw new TypeError('Expected an object, got an array');
 	}
 
 	return _mapObject(object, mapper, options);
