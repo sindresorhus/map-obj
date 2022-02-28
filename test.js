@@ -153,6 +153,12 @@ test('validates input', t => {
 	}, {
 		instanceOf: TypeError,
 	});
+
+	t.throws(() => {
+		mapObject([1, 2], (key, value) => [value, key]);
+	}, {
+		instanceOf: TypeError,
+	});
 });
 
 test('__proto__ keys are safely dropped', t => {
