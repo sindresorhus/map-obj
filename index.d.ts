@@ -22,7 +22,8 @@ export type Mapper<
 > = (
 	sourceKey: keyof SourceObjectType,
 	sourceValue: SourceObjectType[keyof SourceObjectType],
-	source: SourceObjectType
+	source: SourceObjectType,
+	path: string[],
 ) => [
 	targetKey: MappedObjectKeyType,
 	targetValue: MappedObjectValueType,

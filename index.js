@@ -9,7 +9,7 @@ const isObjectCustom = value =>
 
 export const mapObjectSkip = Symbol('mapObjectSkip');
 
-const _mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
+const _mapObject = (object, mapper, options, {isSeen = new WeakMap(), path = []} = {}) => {
 	options = {
 		deep: false,
 		target: {},
@@ -25,13 +25,18 @@ const _mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	const {target} = options;
 	delete options.target;
 
-	const mapArray = array => array.map(element => isObjectCustom(element) ? _mapObject(element, mapper, options, isSeen) : element);
+	const mapArray = array => array.map((element, i) =>
+		isObjectCustom(element)
+			? _mapObject(element, mapper, options, {isSeen, path: [...path, i]})
+			: element,
+	);
+
 	if (Array.isArray(object)) {
 		return mapArray(object);
 	}
 
 	for (const [key, value] of Object.entries(object)) {
-		const mapResult = mapper(key, value, object);
+		const mapResult = mapper(key, value, object, options.deep ? [...path, key] : undefined);
 
 		if (mapResult === mapObjectSkip) {
 			continue;
@@ -47,7 +52,7 @@ const _mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 		if (options.deep && shouldRecurse && isObjectCustom(newValue)) {
 			newValue = Array.isArray(newValue)
 				? mapArray(newValue)
-				: _mapObject(newValue, mapper, options, isSeen);
+				: _mapObject(newValue, mapper, options, {isSeen, path: [...path, key]});
 		}
 
 		target[newKey] = newValue;

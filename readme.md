@@ -38,9 +38,16 @@ The source object to copy properties from.
 
 #### mapper
 
-Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?] | mapObjectSkip`
+Type: `(sourceKey, sourceValue, source, path) => [targetKey, targetValue, mapperOptions?] | mapObjectSkip`
 
 A mapping function.
+
+##### path
+
+Type: `string[]|undefined`\
+
+If `deep === true`, this is the sequence of keys to reach the current value from the `source`;
+otherwise it is `undefined`.
 
 ##### mapperOptions
 

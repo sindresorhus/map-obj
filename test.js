@@ -186,3 +186,70 @@ test('remove keys (#36)', t => {
 	const actual = mapObject(object, mapper, {deep: true});
 	t.deepEqual(actual, expected);
 });
+
+test('mapper argument `path` is only available for deep mappings', t => {
+	const subject = {
+		one: 1,
+		nested: {
+			two: 2,
+			deep: {
+				three: 3,
+			},
+
+			array: [4, 5, 6],
+		},
+	};
+
+	mapObject(
+		subject,
+		(key, value, source, path) => {
+			t.is(path, undefined);
+			return [key, value];
+		},
+	);
+
+	mapObject(
+		subject,
+		(key, value, source, path) => {
+			t.true(Array.isArray(path));
+			return [key, value];
+		},
+		{deep: true},
+	);
+});
+
+test('mapper argument `path` contains the sequence of keys to reach the current value from the source', t => {
+	const subject = {
+		one: 1,
+		nested: {
+			two: 2,
+			deep: {
+				three: 3,
+			},
+
+			array: [4, 5, 6],
+		},
+	};
+
+	const expectations = {
+		one: 1,
+		nested: subject.nested,
+		'nested.two': 2,
+		'nested.deep': subject.nested.deep,
+		'nested.deep.three': 3,
+		'nested.array': subject.nested.array,
+		'nested.array.0': 4,
+		'nested.array.1': 5,
+		'nested.array.2': 6,
+	};
+
+	const mapper = (key, value, source, path) => {
+		t.true(Array.isArray(path));
+		t.is(path.at(-1), key);
+		const expectedValue = expectations[path.join('.')];
+		t.is(value, expectedValue);
+		return [key, value];
+	};
+
+	mapObject(subject, mapper, {deep: true});
+});
