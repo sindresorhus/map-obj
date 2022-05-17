@@ -44,7 +44,7 @@ A mapping function.
 
 ##### path
 
-Type: `string[]|undefined`\
+Type: `string[] | undefined`\
 
 If `deep === true`, this is the sequence of keys to reach the current value from the `source`;
 otherwise it is `undefined`.

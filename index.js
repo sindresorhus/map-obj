@@ -25,9 +25,9 @@ const _mapObject = (object, mapper, options, {isSeen = new WeakMap(), path = []}
 	const {target} = options;
 	delete options.target;
 
-	const mapArray = array => array.map((element, i) =>
+	const mapArray = array => array.map((element, index) =>
 		isObjectCustom(element)
-			? _mapObject(element, mapper, options, {isSeen, path: [...path, i]})
+			? _mapObject(element, mapper, options, {isSeen, path: [...path, index]})
 			: element,
 	);
 
