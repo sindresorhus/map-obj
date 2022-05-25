@@ -203,7 +203,7 @@ test('mapper argument `path` is only available for deep mappings', t => {
 	mapObject(
 		subject,
 		(key, value, source, path) => {
-			t.is(path, undefined);
+			t.true(Array.isArray(path) && path.length === 0);
 			return [key, value];
 		},
 	);

@@ -36,7 +36,7 @@ const _mapObject = (object, mapper, options, {isSeen = new WeakMap(), path = []}
 	}
 
 	for (const [key, value] of Object.entries(object)) {
-		const mapResult = mapper(key, value, object, options.deep ? [...path, key] : undefined);
+		const mapResult = mapper(key, value, object, options.deep ? [...path, key] : []);
 
 		if (mapResult === mapObjectSkip) {
 			continue;
