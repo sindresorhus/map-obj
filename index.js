@@ -25,14 +25,14 @@ const _mapObject = (object, mapper, options, {isSeen = new WeakMap(), path = []}
 	const {target} = options;
 	delete options.target;
 
-	const mapArray = array => array.map((element, index) =>
+	const mapArray = (array, arrayPath) => array.map((element, index) =>
 		isObjectCustom(element)
-			? _mapObject(element, mapper, options, {isSeen, path: [...path, index]})
+			? _mapObject(element, mapper, options, {isSeen, path: [...arrayPath, index]})
 			: element,
 	);
 
 	if (Array.isArray(object)) {
-		return mapArray(object);
+		return mapArray(object, path);
 	}
 
 	for (const [key, value] of Object.entries(object)) {
@@ -51,7 +51,7 @@ const _mapObject = (object, mapper, options, {isSeen = new WeakMap(), path = []}
 
 		if (options.deep && shouldRecurse && isObjectCustom(newValue)) {
 			newValue = Array.isArray(newValue)
-				? mapArray(newValue)
+				? mapArray(newValue, [...path, key])
 				: _mapObject(newValue, mapper, options, {isSeen, path: [...path, key]});
 		}
 

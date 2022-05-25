@@ -49,6 +49,19 @@ Type: `string[]`\
 If `deep === true`, this is the sequence of keys to reach the current value from the `source`;
 otherwise it is an empty array.
 
+For arrays, the key is the index of the element being mapped.
+
+Example:
+```js
+const originalObject = {first: [{value: 1}, {value: 2}, {value: 3}], second: [{value: 4}, {value: 5}, {value: 6}]};
+const mapper = (key, value, source, path) => path.includes('first') || path.includes(1)
+	? [`__${key}__`, value]
+	: [key, value];
+
+const newObject = mapObject(originalObject, mapper, {deep: true});
+//=> {__first__: [{__value__: 1}, {__value__: 2}, {__value__: 3}], second: [{value: 4}, {__value__: 5}, {value: 6}]}
+```
+
 ##### mapperOptions
 
 Type: `object`

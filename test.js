@@ -226,8 +226,11 @@ test('mapper argument `path` contains the sequence of keys to reach the current 
 			deep: {
 				three: 3,
 			},
-
-			array: [4, 5, 6],
+			simpleArray: [4, 5, 6],
+			complexArray: [
+				{seven: 7},
+				{eight: 8},
+			],
 		},
 	};
 
@@ -237,10 +240,10 @@ test('mapper argument `path` contains the sequence of keys to reach the current 
 		'nested.two': 2,
 		'nested.deep': subject.nested.deep,
 		'nested.deep.three': 3,
-		'nested.array': subject.nested.array,
-		'nested.array.0': 4,
-		'nested.array.1': 5,
-		'nested.array.2': 6,
+		'nested.simpleArray': subject.nested.simpleArray,
+		'nested.complexArray': subject.nested.complexArray,
+		'nested.complexArray.0.seven': 7,
+		'nested.complexArray.1.eight': 8,
 	};
 
 	const mapper = (key, value, source, path) => {
