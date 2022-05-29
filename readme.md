@@ -44,16 +44,19 @@ A mapping function.
 
 ##### path
 
-Type: `string[]`\
+Type: `string[]`
 
-If `deep === true`, this is the sequence of keys to reach the current value from the `source`;
-otherwise it is an empty array.
+When using `{deep: true}`, this is the sequence of keys to reach the current value from the `source`, otherwise it is an empty array.
 
 For arrays, the key is the index of the element being mapped.
 
 Example:
+
 ```js
+import mapObject from 'map-obj';
+
 const originalObject = {first: [{value: 1}, {value: 2}, {value: 3}], second: [{value: 4}, {value: 5}, {value: 6}]};
+
 const mapper = (key, value, source, path) => path.includes('first') || path.includes(1)
 	? [`__${key}__`, value]
 	: [key, value];
