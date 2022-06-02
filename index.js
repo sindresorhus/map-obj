@@ -35,7 +35,7 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	for (const [key, value] of Object.entries(object)) {
 		let [newKey, newValue] = mapper(key, value, object);
 
-		if (deepOption(key) && isObjectCustom(newValue)) {
+		if (deepOption(key, value, object) && isObjectCustom(newValue)) {
 			newValue = Array.isArray(newValue) ?
 				mapArray(newValue) :
 				mapObject(newValue, mapper, options, isSeen);

@@ -27,7 +27,7 @@ declare namespace mapObject {
 	//	}
 	```
     */
-	type DeepKeyFilter = (objectKey: string) => boolean;
+	type DeepKeyFilter = <SourceObjectType>(objectKey: string, objectValue: SourceObjectType[keyof SourceObjectType], source: SourceObjectType) => boolean;
 
 	type Mapper<
 		SourceObjectType extends {[key: string]: any},
