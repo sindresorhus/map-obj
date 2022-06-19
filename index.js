@@ -1,3 +1,5 @@
+import { Blob } from 'node:buffer';
+
 const isObject = value => typeof value === 'object' && value !== null;
 
 // Customized for this use-case
