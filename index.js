@@ -5,7 +5,8 @@ const isObjectCustom = value =>
 	isObject(value)
 	&& !(value instanceof RegExp)
 	&& !(value instanceof Error)
-	&& !(value instanceof Date);
+	&& !(value instanceof Date)
+	&& !(value instanceof Blob);
 
 export const mapObjectSkip = Symbol('mapObjectSkip');
 
