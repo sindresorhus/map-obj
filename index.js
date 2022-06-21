@@ -1,4 +1,4 @@
-import { Blob } from 'node:buffer';
+import {Blob} from 'node:buffer';
 
 const isObject = value => typeof value === 'object' && value !== null;
 
