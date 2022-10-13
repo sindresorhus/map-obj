@@ -24,9 +24,9 @@ export type Mapper<
 	sourceValue: SourceObjectType[keyof SourceObjectType],
 	source: SourceObjectType
 ) => [
-	targetKey: MappedObjectKeyType,
-	targetValue: MappedObjectValueType,
-	mapperOptions?: MapperOptions,
+	MappedObjectKeyType,
+	MappedObjectValueType,
+	MapperOptions | undefined,
 ] | typeof mapObjectSkip;
 
 export interface Options {
