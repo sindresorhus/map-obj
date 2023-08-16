@@ -24,6 +24,9 @@ const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.
 
 const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObjectSkip);
 //=> {one: 1}
+
+const newObject = mapObject({foo: {bar: [2], baz: [1, 2, 3]}}, (key, value, source, path) => path.join('.') === 'foo.baz' ? [key, 3] : [key, value], {deep: true});
+//=> {foo: {bar:[2], baz: [3, 3, 3]}}
 ```
 
 ## API
@@ -38,9 +41,28 @@ The source object to copy properties from.
 
 #### mapper
 
-Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOptions?] | mapObjectSkip`
+Type: `(sourceKey, sourceValue, source, path) => [targetKey, targetValue, mapperOptions?] | mapObjectSkip`
 
 A mapping function.
+
+##### path
+
+Type: `string[]`
+
+When using `deep: true`, this is the sequence of keys to reach the current value from the `source`, otherwise it is an empty array.
+
+For arrays, the key is the index of the element being mapped.
+
+```js
+import mapObject from "map-obj";
+
+const object = {foo: {bar: [2], baz: [1, 2, 3]}}
+const mapper = (key, value, source, path) => path.join(".") === "foo.baz" ? [key, 3] : [key, value];
+const result = mapObject(object, 	mapper, { deep: true });
+
+console.log(result);
+//=> {foo: {bar:[2], baz: [3, 3, 3]}}
+```
 
 ##### mapperOptions
 

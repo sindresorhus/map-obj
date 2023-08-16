@@ -22,7 +22,8 @@ export type Mapper<
 > = (
 	sourceKey: keyof SourceObjectType,
 	sourceValue: SourceObjectType[keyof SourceObjectType],
-	source: SourceObjectType
+	source: SourceObjectType,
+	path: string[],
 ) => [
 	targetKey: MappedObjectKeyType,
 	targetValue: MappedObjectValueType,
@@ -85,6 +86,9 @@ const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.
 
 const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObjectSkip);
 //=> {one: 1}
+
+const newObject = mapObject({foo: {bar: [2], baz: [1, 2, 3]}}, (key, value, source, path) => path.join('.') === 'foo.baz' ? [key, 3] : [key, value], {deep: true});
+//=> {foo: {bar:[2], baz: [3, 3, 3]}}
 ```
 */
 export default function mapObject<
