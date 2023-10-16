@@ -58,7 +58,7 @@ import mapObject from "map-obj";
 
 const object = {foo: {bar: [2], baz: [1, 2, 3]}}
 const mapper = (key, value, source, path) => path.join(".") === "foo.baz" ? [key, 3] : [key, value];
-const result = mapObject(object, 	mapper, { deep: true });
+const result = mapObject(object, mapper, {deep: true});
 
 console.log(result);
 //=> {foo: {bar:[2], baz: [3, 3, 3]}}
