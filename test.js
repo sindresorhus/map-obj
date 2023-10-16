@@ -188,6 +188,7 @@ test('remove keys (#36)', t => {
 });
 
 test('mapper `path` argument', t => {
+	t.plan(10);
 	const subject = {
 		one: 1,
 		nested: {
@@ -203,7 +204,8 @@ test('mapper `path` argument', t => {
 	mapObject(
 		subject,
 		(key, value, source, path) => {
-			t.true(Array.isArray(path) && path.length === 0);
+			t.true(Array.isArray(path));
+			t.is(path.length, 0);
 			return [key, value];
 		},
 	);
