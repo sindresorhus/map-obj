@@ -189,6 +189,7 @@ test('remove keys (#36)', t => {
 
 test('mapper `path` argument', t => {
 	t.plan(10);
+
 	const subject = {
 		one: 1,
 		nested: {
