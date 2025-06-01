@@ -13,15 +13,19 @@ npm install map-obj
 ```js
 import mapObject, {mapObjectSkip} from 'map-obj';
 
+// Swap keys and values
 const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 //=> {bar: 'foo'}
 
+// Convert keys to lowercase (shallow)
 const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value]);
 //=> {foo: true, bar: {bAz: true}}
 
+// Convert keys to lowercase (deep recursion)
 const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value], {deep: true});
 //=> {foo: true, bar: {baz: true}}
 
+// Filter out specific values
 const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObjectSkip);
 //=> {one: 1}
 ```
@@ -91,15 +95,3 @@ console.log(result);
 ## Related
 
 - [filter-obj](https://github.com/sindresorhus/filter-obj) - Filter object keys and values into a new object
-
----
-
-<div align="center">
-	<b>
-		<a href="https://tidelift.com/subscription/pkg/npm-map-obj?utm_source=npm-map-obj&utm_medium=referral&utm_campaign=readme">Get professional support for this package with a Tidelift subscription</a>
-	</b>
-	<br>
-	<sub>
-		Tidelift helps make open source sustainable for maintainers while giving companies<br>assurances about security, maintenance, and licensing for their dependencies.
-	</sub>
-</div>

@@ -74,15 +74,19 @@ Map object keys and values into a new object.
 ```
 import mapObject, {mapObjectSkip} from 'map-obj';
 
+// Swap keys and values
 const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 //=> {bar: 'foo'}
 
+// Convert keys to lowercase (shallow)
 const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value]);
 //=> {foo: true, bar: {bAz: true}}
 
+// Convert keys to lowercase (deep recursion)
 const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value], {deep: true});
 //=> {foo: true, bar: {baz: true}}
 
+// Filter out specific values
 const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key, value] : mapObjectSkip);
 //=> {one: 1}
 ```
