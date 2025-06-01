@@ -13,7 +13,7 @@ npm install map-obj
 ```js
 import mapObject, {mapObjectSkip} from 'map-obj';
 
-const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
+const newObject = mapObject({foo: 'bar'}, (key, value) => [key, value]);
 //=> {bar: 'foo'}
 
 const newObject = mapObject({FOO: true, bAr: {bAz: true}}, (key, value) => [key.toLowerCase(), value]);
