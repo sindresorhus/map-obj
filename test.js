@@ -7,6 +7,26 @@ test('main', t => {
 	t.is(mapObject({foo: 'bar'}, (key, value) => [value, key]).bar, 'foo');
 });
 
+test('mapper source argument is the original input (shallow)', t => {
+	const input = {foo: {bar: 1}};
+	mapObject(input, (key, value, source) => {
+		t.is(source, input);
+		return [key, value];
+	});
+});
+
+test('mapper source argument is the original input when using target', t => {
+	const input = {x: 1};
+	const target = {y: 2};
+	mapObject(input, (key, value, source) => {
+		t.is(source, input);
+		t.not(source, target);
+		return [key, value];
+	}, {target});
+	// Ensure target still works as target
+	t.deepEqual(target, {y: 2, x: 1});
+});
+
 test('target option', t => {
 	const target = {};
 	t.is(mapObject({foo: 'bar'}, (key, value) => [value, key], {target}), target);
@@ -45,6 +65,15 @@ test('deep option', t => {
 	const mapper = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
 	const actual = mapObject(object, mapper, {deep: true});
 	t.deepEqual(actual, expected);
+});
+
+test('mapper source arg is the original input (deep)', t => {
+	const input = {a: {b: {c: 1}}};
+	mapObject(input, (key, value, source) => {
+		// Should always be the root input object
+		t.is(source, input);
+		return [key, value];
+	}, {deep: true});
 });
 
 test('shouldRecurse mapper option', t => {

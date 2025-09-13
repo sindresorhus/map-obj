@@ -46,6 +46,9 @@ Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOption
 
 A mapping function.
 
+> [!NOTE]
+> When `options.deep` is `true`, the mapper can receive keys and values from nested objects and arrays. In that case, the mapper parameters are intentionally widened: `sourceKey` is typed as `string` and `sourceValue` as `unknown`, reflecting the actual runtime behavior when recursing into unknown shapes. The third argument `source` is always the original input object, not the current nested owner.
+
 ##### mapperOptions
 
 Type: `object`

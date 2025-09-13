@@ -16,7 +16,7 @@ console.log(result);
 export const mapObjectSkip: unique symbol;
 
 export type Mapper<
-	SourceObjectType extends Record<string, any>,
+	SourceObjectType extends Record<string, unknown>,
 	MappedObjectKeyType extends string,
 	MappedObjectValueType,
 > = (
@@ -34,13 +34,14 @@ Mapper used when `{deep: true}` is enabled.
 
 In deep mode we may visit nested objects with keys and values unrelated to the top-level object, so we intentionally widen the key and value types.
 */
-export type DeepMapper<
+type DeepMapper<
+	SourceObjectType extends Record<string, unknown>,
 	MappedObjectKeyType extends string,
 	MappedObjectValueType,
 > = (
 	sourceKey: string,
-	sourceValue: any,
-	source: any
+	sourceValue: unknown,
+	source: SourceObjectType
 ) => [
 	targetKey: MappedObjectKeyType,
 	targetValue: MappedObjectValueType,
@@ -60,14 +61,14 @@ export interface Options {
 
 	@default {}
 	*/
-	readonly target?: Record<string, any>;
+	readonly target?: Record<string, unknown>;
 }
 
 export interface DeepOptions extends Options {
 	readonly deep: true;
 }
 
-export interface TargetOptions<TargetObjectType extends Record<string, any>> extends Options {
+export interface TargetOptions<TargetObjectType extends Record<string, unknown>> extends Options {
 	readonly target: TargetObjectType;
 }
 
@@ -111,12 +112,12 @@ const newObject = mapObject({one: 1, two: 2}, (key, value) => value === 1 ? [key
 */
 export default function mapObject<
 	SourceObjectType extends Record<string, unknown>,
-	TargetObjectType extends Record<string, any>,
+	TargetObjectType extends Record<string, unknown>,
 	MappedObjectKeyType extends string,
 	MappedObjectValueType,
 >(
 	source: SourceObjectType,
-	mapper: DeepMapper<MappedObjectKeyType, MappedObjectValueType>,
+	mapper: DeepMapper<SourceObjectType, MappedObjectKeyType, MappedObjectValueType>,
 	options: DeepOptions & TargetOptions<TargetObjectType>
 ): TargetObjectType & Record<string, unknown>;
 export default function mapObject<
@@ -125,12 +126,12 @@ export default function mapObject<
 	MappedObjectValueType,
 >(
 	source: SourceObjectType,
-	mapper: DeepMapper<MappedObjectKeyType, MappedObjectValueType>,
+	mapper: DeepMapper<SourceObjectType, MappedObjectKeyType, MappedObjectValueType>,
 	options: DeepOptions
 ): Record<string, unknown>;
 export default function mapObject<
-	SourceObjectType extends Record<string, any>,
-	TargetObjectType extends Record<string, any>,
+	SourceObjectType extends Record<string, unknown>,
+	TargetObjectType extends Record<string, unknown>,
 	MappedObjectKeyType extends string,
 	MappedObjectValueType,
 >(
@@ -143,7 +144,7 @@ export default function mapObject<
 	options: TargetOptions<TargetObjectType>
 ): TargetObjectType & {[K in MappedObjectKeyType]: MappedObjectValueType};
 export default function mapObject<
-	SourceObjectType extends Record<string, any>,
+	SourceObjectType extends Record<string, unknown>,
 	MappedObjectKeyType extends string,
 	MappedObjectValueType,
 >(

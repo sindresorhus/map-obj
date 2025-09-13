@@ -22,16 +22,24 @@ expectType<{baz: string} & Record<string, 'foo'>>(object1);
 expectType<'foo'>(object1.bar);
 expectType<string>(object1.baz);
 
-const object2 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
+const object2 = mapObject({foo: 'bar'}, (key, value) => [String(value), key], {
 	deep: true,
 });
 expectType<Record<string, unknown>>(object2);
 // Deep mapper parameters should be widened
-mapObject({fooUpper: true, bAr: {bAz: true}}, (key, value) => {
+mapObject({fooUpper: true, bAr: {bAz: true}}, (key, value, source) => {
 	expectType<string>(key);
+	// In deep mode, source is the original input object
+	expectType<{fooUpper: boolean; bAr: {bAz: boolean}}>(source);
 	return [String(key), value];
 }, {deep: true});
-const object3 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
+
+// Shallow mode: source should be the original input type
+mapObject({alpha: 1, beta: 2}, (key, value, source) => {
+	expectType<{alpha: number; beta: number}>(source);
+	return [key, value];
+});
+const object3 = mapObject({foo: 'bar'}, (key, value) => [String(value), key], {
 	deep: true,
 	target: {bar: 'baz' as const},
 });

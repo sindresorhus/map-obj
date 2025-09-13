@@ -66,5 +66,8 @@ export default function mapObject(object, mapper, options) {
 		throw new TypeError('Expected an object, got an array');
 	}
 
-	return _mapObject(object, mapper, options);
+	// Ensure the third mapper argument is always the original input object
+	const root = object;
+	const mapperWithRoot = (key, value) => mapper(key, value, root);
+	return _mapObject(object, mapperWithRoot, options);
 }
