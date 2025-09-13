@@ -26,6 +26,11 @@ const object2 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
 	deep: true,
 });
 expectType<Record<string, unknown>>(object2);
+// Deep mapper parameters should be widened
+mapObject({fooUpper: true, bAr: {bAz: true}}, (key, value) => {
+	expectType<string>(key);
+	return [String(key), value];
+}, {deep: true});
 const object3 = mapObject({foo: 'bar'}, (key, value) => [value, key], {
 	deep: true,
 	target: {bar: 'baz' as const},

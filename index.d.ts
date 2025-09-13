@@ -29,6 +29,24 @@ export type Mapper<
 	mapperOptions?: MapperOptions,
 ] | typeof mapObjectSkip;
 
+/**
+Mapper used when `{deep: true}` is enabled.
+
+In deep mode we may visit nested objects with keys and values unrelated to the top-level object, so we intentionally widen the key and value types.
+*/
+export type DeepMapper<
+	MappedObjectKeyType extends string,
+	MappedObjectValueType,
+> = (
+	sourceKey: string,
+	sourceValue: any,
+	source: any
+) => [
+	targetKey: MappedObjectKeyType,
+	targetValue: MappedObjectValueType,
+	mapperOptions?: MapperOptions,
+] | typeof mapObjectSkip;
+
 export interface Options {
 	/**
 	Recurse nested objects and objects in arrays.
@@ -98,11 +116,7 @@ export default function mapObject<
 	MappedObjectValueType,
 >(
 	source: SourceObjectType,
-	mapper: Mapper<
-	SourceObjectType,
-	MappedObjectKeyType,
-	MappedObjectValueType
-	>,
+	mapper: DeepMapper<MappedObjectKeyType, MappedObjectValueType>,
 	options: DeepOptions & TargetOptions<TargetObjectType>
 ): TargetObjectType & Record<string, unknown>;
 export default function mapObject<
@@ -111,11 +125,7 @@ export default function mapObject<
 	MappedObjectValueType,
 >(
 	source: SourceObjectType,
-	mapper: Mapper<
-	SourceObjectType,
-	MappedObjectKeyType,
-	MappedObjectValueType
-	>,
+	mapper: DeepMapper<MappedObjectKeyType, MappedObjectValueType>,
 	options: DeepOptions
 ): Record<string, unknown>;
 export default function mapObject<
