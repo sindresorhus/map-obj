@@ -47,7 +47,7 @@ Type: `(sourceKey, sourceValue, source) => [targetKey, targetValue, mapperOption
 A mapping function.
 
 > [!NOTE]
-> When `options.deep` is `true`, the mapper can receive keys and values from nested objects and arrays. In that case, the mapper parameters are intentionally widened: `sourceKey` is typed as `string` and `sourceValue` as `unknown`, reflecting the actual runtime behavior when recursing into unknown shapes. The third argument `source` is always the original input object, not the current nested owner.
+> When `options.deep` is `true`, the mapper receives keys and values from nested objects and arrays. The `sourceKey` parameter is typed as `string` and `sourceValue` as `unknown` to reflect the actual runtime behavior when recursing into unknown shapes. The third argument `source` is always the original input object, not the current nested owner.
 
 ##### mapperOptions
 
@@ -72,6 +72,8 @@ Type: `boolean`\
 Default: `false`
 
 Recurse nested objects and objects in arrays.
+
+Built-in objects like `RegExp`, `Error`, `Date`, and `Blob` are not recursed into. Special objects like Jest matchers are also automatically excluded.
 
 ##### target
 

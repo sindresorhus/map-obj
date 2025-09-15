@@ -53,6 +53,8 @@ export interface Options {
 	Recurse nested objects and objects in arrays.
 
 	@default false
+
+	Built-in objects like `RegExp`, `Error`, `Date`, and `Blob` are not recursed into. Special objects like Jest matchers are also automatically excluded.
 	*/
 	readonly deep?: boolean;
 

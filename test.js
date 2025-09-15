@@ -215,3 +215,62 @@ test('remove keys (#36)', t => {
 	const actual = mapObject(object, mapper, {deep: true});
 	t.deepEqual(actual, expected);
 });
+
+test('should not recurse into Jest-like matchers', t => {
+	// Mock a Jest asymmetric matcher like expect.anything()
+	const jestMatcher = {
+		$$typeof: Symbol.for('jest.asymmetricMatcher'),
+		asymmetricMatch: () => true,
+		toString: () => 'expect.anything()',
+	};
+
+	const input = {
+		normal: {nested: 'value'},
+		matcher: jestMatcher,
+	};
+
+	let calls = 0;
+	const result = mapObject(input, (key, value) => {
+		calls++;
+		// Should not recurse into jestMatcher properties
+		t.not(key, '$$typeof');
+		t.not(key, 'asymmetricMatch');
+		t.not(key, 'toString');
+		return [key, value];
+	}, {deep: true});
+
+	t.is(result.matcher, jestMatcher);
+	t.is(result.normal.nested, 'value');
+	t.is(calls, 3); // 'normal', 'nested', 'matcher'
+});
+
+test('options object is not mutated', t => {
+	const options = {deep: true, target: {}};
+	const originalOptions = {...options};
+
+	mapObject({a: 1}, (key, value) => [key, value], options);
+
+	t.deepEqual(options, originalOptions);
+});
+
+test('built-in objects are not recursed into', t => {
+	const date = new Date();
+	const regex = /test/;
+	const error = new Error('test');
+
+	const input = {
+		date,
+		regex,
+		error,
+		normal: {nested: 'value'},
+	};
+
+	const calls = [];
+	mapObject(input, (key, value) => {
+		calls.push(key);
+		return [key, value];
+	}, {deep: true});
+
+	// Should visit top-level keys and nested normal object
+	t.deepEqual(calls.sort(), ['date', 'error', 'nested', 'normal', 'regex']);
+});
