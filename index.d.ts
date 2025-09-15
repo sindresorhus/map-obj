@@ -48,7 +48,7 @@ type DeepMapper<
 	mapperOptions?: MapperOptions,
 ] | typeof mapObjectSkip;
 
-export interface Options {
+export type Options = {
 	/**
 	Recurse nested objects and objects in arrays.
 
@@ -64,17 +64,17 @@ export interface Options {
 	@default {}
 	*/
 	readonly target?: Record<string, unknown>;
-}
+};
 
-export interface DeepOptions extends Options {
+export type DeepOptions = {
 	readonly deep: true;
-}
+} & Options;
 
-export interface TargetOptions<TargetObjectType extends Record<string, unknown>> extends Options {
+export type TargetOptions<TargetObjectType extends Record<string, unknown>> = {
 	readonly target: TargetObjectType;
-}
+} & Options;
 
-export interface MapperOptions {
+export type MapperOptions = {
 	/**
 	Whether `targetValue` should be recursed.
 
@@ -83,7 +83,7 @@ export interface MapperOptions {
 	@default true
 	*/
 	readonly shouldRecurse?: boolean;
-}
+};
 
 /**
 Map object keys and values into a new object.
@@ -139,12 +139,12 @@ export default function mapObject<
 >(
 	source: SourceObjectType,
 	mapper: Mapper<
-	SourceObjectType,
-	MappedObjectKeyType,
-	MappedObjectValueType
+		SourceObjectType,
+		MappedObjectKeyType,
+		MappedObjectValueType
 	>,
 	options: TargetOptions<TargetObjectType>
-): TargetObjectType & {[K in MappedObjectKeyType]: MappedObjectValueType};
+): TargetObjectType & Record<MappedObjectKeyType, MappedObjectValueType>;
 export default function mapObject<
 	SourceObjectType extends Record<string, unknown>,
 	MappedObjectKeyType extends string,
@@ -152,9 +152,9 @@ export default function mapObject<
 >(
 	source: SourceObjectType,
 	mapper: Mapper<
-	SourceObjectType,
-	MappedObjectKeyType,
-	MappedObjectValueType
+		SourceObjectType,
+		MappedObjectKeyType,
+		MappedObjectValueType
 	>,
 	options?: Options
-): {[K in MappedObjectKeyType]: MappedObjectValueType};
+): Record<MappedObjectKeyType, MappedObjectValueType>;

@@ -1,7 +1,7 @@
 import {expectType, expectAssignable} from 'tsd';
-import mapObject, {Options, mapObjectSkip} from './index.js';
+import mapObject, {type Options, mapObjectSkip} from './index.js';
 
-const options: Options = {}; // eslint-disable-line @typescript-eslint/no-unused-vars
+const options: Options = {};
 
 const newObject = mapObject({foo: 'bar'}, (key, value) => [value, key]);
 expectType<Record<string, 'foo'>>(newObject);
