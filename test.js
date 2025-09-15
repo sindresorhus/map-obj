@@ -7,30 +7,35 @@ test('main', t => {
 	t.is(mapObject({foo: 'bar'}, (key, value) => [value, key]).bar, 'foo');
 });
 
-test('mapper source argument is the original input (shallow)', t => {
-	const input = {foo: {bar: 1}};
+test('mapper source argument is always the original input', t => {
+	const input = {foo: {bar: 1}, a: {b: {c: 1}}};
+
+	// Test shallow mode
 	mapObject(input, (key, value, source) => {
 		t.is(source, input);
 		return [key, value];
 	});
-});
 
-test('mapper source argument is the original input when using target', t => {
-	const input = {x: 1};
-	const target = {y: 2};
+	// Test deep mode
 	mapObject(input, (key, value, source) => {
-		t.is(source, input);
-		t.not(source, target);
+		t.is(source, input); // Should always be the root input object, not nested objects
 		return [key, value];
-	}, {target});
-	// Ensure target still works as target
-	t.deepEqual(target, {y: 2, x: 1});
+	}, {deep: true});
 });
 
 test('target option', t => {
-	const target = {};
-	t.is(mapObject({foo: 'bar'}, (key, value) => [value, key], {target}), target);
-	t.is(target.bar, 'foo');
+	const input = {x: 1, foo: 'bar'};
+	const target = {y: 2};
+
+	// Test that the function returns the target object and source argument is correct
+	const result = mapObject(input, (key, value, source) => {
+		t.is(source, input);
+		t.not(source, target);
+		return [key === 'foo' ? 'baz' : key, value];
+	}, {target});
+
+	t.is(result, target);
+	t.deepEqual(target, {y: 2, x: 1, baz: 'bar'});
 });
 
 test('deep option', t => {
@@ -65,15 +70,6 @@ test('deep option', t => {
 	const mapper = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
 	const actual = mapObject(object, mapper, {deep: true});
 	t.deepEqual(actual, expected);
-});
-
-test('mapper source arg is the original input (deep)', t => {
-	const input = {a: {b: {c: 1}}};
-	mapObject(input, (key, value, source) => {
-		// Should always be the root input object
-		t.is(source, input);
-		return [key, value];
-	}, {deep: true});
 });
 
 test('shouldRecurse mapper option', t => {
@@ -257,11 +253,21 @@ test('built-in objects are not recursed into', t => {
 	const date = new Date();
 	const regex = /test/;
 	const error = new Error('test');
+	const map = new Map([['key', 'value']]);
+	const set = new Set([1, 2, 3]);
+	const promise = Promise.resolve(42);
+	const buffer = new ArrayBuffer(8);
+	const uint8Array = new Uint8Array(4);
 
 	const input = {
 		date,
 		regex,
 		error,
+		map,
+		set,
+		promise,
+		buffer,
+		uint8Array,
 		normal: {nested: 'value'},
 	};
 
@@ -272,5 +278,111 @@ test('built-in objects are not recursed into', t => {
 	}, {deep: true});
 
 	// Should visit top-level keys and nested normal object
-	t.deepEqual(calls.sort(), ['date', 'error', 'nested', 'normal', 'regex']);
+	t.deepEqual(calls.sort(), ['buffer', 'date', 'error', 'map', 'nested', 'normal', 'promise', 'regex', 'set', 'uint8Array']);
+});
+
+test('symbol keys are ignored by default', t => {
+	const symbol = Symbol('test');
+	const input = {
+		regular: 'value',
+		[symbol]: 'symbolValue',
+	};
+
+	const result = mapObject(input, (key, value) => [key, value]);
+
+	t.true('regular' in result);
+	t.false(symbol in result);
+	t.is(result.regular, 'value');
+	t.is(result[symbol], undefined);
+});
+
+test('symbol keys are included with includeSymbols option', t => {
+	const symbol = Symbol('test');
+	const input = {
+		regular: 'value',
+		[symbol]: 'symbolValue',
+	};
+
+	const result = mapObject(input, (key, value) => [key, value], {includeSymbols: true});
+
+	t.true('regular' in result);
+	t.true(symbol in result);
+	t.is(result.regular, 'value');
+	t.is(result[symbol], 'symbolValue');
+});
+
+test('symbol keys work with deep option', t => {
+	const symbol1 = Symbol('outer');
+	const symbol2 = Symbol('inner');
+	const input = {
+		regular: 'value',
+		nested: {
+			regularNested: 'nestedValue',
+			[symbol2]: 'innerSymbol',
+		},
+		[symbol1]: 'outerSymbol',
+	};
+
+	const result = mapObject(input, (key, value) => [key, value], {
+		deep: true,
+		includeSymbols: true,
+	});
+
+	t.is(result.regular, 'value');
+	t.is(result.nested.regularNested, 'nestedValue');
+	t.is(result.nested[symbol2], 'innerSymbol');
+	t.is(result[symbol1], 'outerSymbol');
+});
+
+test('handles invalid mapper return values gracefully', t => {
+	t.throws(() => {
+		mapObject({a: 1}, () => null);
+	}, {
+		instanceOf: TypeError,
+		message: 'Mapper must return an array or mapObjectSkip, got null',
+	});
+
+	t.throws(() => {
+		mapObject({a: 1}, () => 'string');
+	}, {
+		instanceOf: TypeError,
+		message: 'Mapper must return an array or mapObjectSkip, got string',
+	});
+
+	t.throws(() => {
+		mapObject({a: 1}, () => []);
+	}, {
+		instanceOf: TypeError,
+		message: 'Mapper must return an array with at least 2 elements [key, value], got 0 elements',
+	});
+
+	t.throws(() => {
+		mapObject({a: 1}, () => ['key']);
+	}, {
+		instanceOf: TypeError,
+		message: 'Mapper must return an array with at least 2 elements [key, value], got 1 elements',
+	});
+});
+
+test('handles non-configurable target properties gracefully', t => {
+	const target = {};
+	Object.defineProperty(target, 'readonly', {
+		value: 'original',
+		writable: false,
+		configurable: false,
+	});
+
+	const result = mapObject({readonly: 'new', other: 'value'}, (key, value) => [key, value], {target});
+
+	t.is(result, target);
+	t.is(result.readonly, 'original'); // Should remain unchanged
+	t.is(result.other, 'value'); // Should be added
+});
+
+test('handles property key collisions', t => {
+	const result = mapObject({a: 1, b: 2}, (key, value) => ['same', value]);
+
+	// Last value wins
+	t.deepEqual(result, {same: 2});
+	t.is(Object.keys(result).length, 1);
 });

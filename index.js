@@ -1,16 +1,48 @@
 const isObject = value => typeof value === 'object' && value !== null;
 
-// Customized for this use-case
-const isObjectCustom = value =>
-	isObject(value)
-	&& !(value instanceof RegExp)
-	&& !(value instanceof Error)
-	&& !(value instanceof Date)
-	&& !(globalThis.Blob && value instanceof globalThis.Blob)
-	&& typeof value.$$typeof !== 'symbol' // Jest asymmetric matchers
-	&& typeof value.asymmetricMatch !== 'function'; // Jest matchers
+// Check if a value is a plain object that should be recursed into
+const isObjectCustom = value => {
+	if (!isObject(value)) {
+		return false;
+	}
+
+	// Exclude built-in objects
+	if (
+		value instanceof RegExp
+		|| value instanceof Error
+		|| value instanceof Date
+		|| value instanceof Map
+		|| value instanceof Set
+		|| value instanceof WeakMap
+		|| value instanceof WeakSet
+		|| value instanceof Promise
+		|| value instanceof ArrayBuffer
+		|| value instanceof DataView
+		|| ArrayBuffer.isView(value) // Typed arrays
+		|| (globalThis.Blob && value instanceof globalThis.Blob)
+	) {
+		return false;
+	}
+
+	// Exclude Jest matchers
+	if (typeof value.$$typeof === 'symbol' || typeof value.asymmetricMatch === 'function') {
+		return false;
+	}
+
+	return true;
+};
 
 export const mapObjectSkip = Symbol('mapObjectSkip');
+
+const getEnumerableKeys = (object, includeSymbols) => {
+	if (includeSymbols) {
+		const stringKeys = Object.keys(object);
+		const symbolKeys = Object.getOwnPropertySymbols(object).filter(symbol => Object.getOwnPropertyDescriptor(object, symbol)?.enumerable);
+		return [...stringKeys, ...symbolKeys];
+	}
+
+	return Object.keys(object);
+};
 
 const _mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	const {
@@ -18,6 +50,7 @@ const _mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 		...processOptions
 	} = {
 		deep: false,
+		includeSymbols: false,
 		...options,
 	};
 
@@ -28,15 +61,25 @@ const _mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	isSeen.set(object, target);
 
 	const mapArray = array => array.map(element => isObjectCustom(element) ? _mapObject(element, mapper, processOptions, isSeen) : element);
+
 	if (Array.isArray(object)) {
 		return mapArray(object);
 	}
 
-	for (const [key, value] of Object.entries(object)) {
+	for (const key of getEnumerableKeys(object, processOptions.includeSymbols)) {
+		const value = object[key];
 		const mapResult = mapper(key, value);
 
 		if (mapResult === mapObjectSkip) {
 			continue;
+		}
+
+		if (!Array.isArray(mapResult)) {
+			throw new TypeError(`Mapper must return an array or mapObjectSkip, got ${mapResult === null ? 'null' : typeof mapResult}`);
+		}
+
+		if (mapResult.length < 2) {
+			throw new TypeError(`Mapper must return an array with at least 2 elements [key, value], got ${mapResult.length} elements`);
 		}
 
 		let [newKey, newValue, {shouldRecurse = true} = {}] = mapResult;
@@ -52,7 +95,16 @@ const _mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 				: _mapObject(newValue, mapper, processOptions, isSeen);
 		}
 
-		target[newKey] = newValue;
+		try {
+			target[newKey] = newValue;
+		} catch (error) {
+			if (error.name === 'TypeError' && error.message.includes('read only')) {
+				// Skip non-configurable properties
+				continue;
+			}
+
+			throw error;
+		}
 	}
 
 	return target;
