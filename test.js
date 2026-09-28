@@ -172,6 +172,24 @@ test('handles circular references', t => {
 	t.deepEqual(actual, expected);
 });
 
+test('the same array is mapped to the same array', t => {
+	const array = [2];
+	const object = {array, array2: array};
+
+	const actual = mapObject(object, (key, value) => [key, value], {deep: true});
+
+	t.is(actual.array, actual.array2);
+});
+
+test('handles circular references in arrays', t => {
+	const array = [2];
+	array.push(array);
+
+	const actual = mapObject({array}, (key, value) => [key, value], {deep: true});
+
+	t.is(actual.array[1], actual.array);
+});
+
 test('validates input', t => {
 	t.throws(() => {
 		mapObject(1, () => {});

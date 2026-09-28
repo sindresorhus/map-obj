@@ -54,17 +54,32 @@ const _mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 		...options,
 	};
 
+	// An array is registered with the array it becomes, so a cycle or a shared array points back at the
+	// mapped array instead of at the object target below, which would replace the array with a plain object.
+	const mapArray = array => {
+		if (isSeen.has(array)) {
+			return isSeen.get(array);
+		}
+
+		const result = [];
+		isSeen.set(array, result);
+
+		for (const element of array) {
+			result.push(isObjectCustom(element) ? _mapObject(element, mapper, processOptions, isSeen) : element);
+		}
+
+		return result;
+	};
+
+	if (Array.isArray(object)) {
+		return mapArray(object);
+	}
+
 	if (isSeen.has(object)) {
 		return isSeen.get(object);
 	}
 
 	isSeen.set(object, target);
-
-	const mapArray = array => array.map(element => isObjectCustom(element) ? _mapObject(element, mapper, processOptions, isSeen) : element);
-
-	if (Array.isArray(object)) {
-		return mapArray(object);
-	}
 
 	for (const key of getEnumerableKeys(object, processOptions.includeSymbols)) {
 		const value = object[key];
