@@ -25,7 +25,7 @@ export type Mapper<
 > = (
 	sourceKey: Extract<keyof SourceObjectType, string>,
 	sourceValue: SourceObjectType[keyof SourceObjectType],
-	source: SourceObjectType
+	source: SourceObjectType,
 ) => [
 	targetKey: MappedObjectKeyType,
 	targetValue: MappedObjectValueType,
@@ -42,7 +42,7 @@ export type MapperWithSymbols<
 > = (
 	sourceKey: keyof SourceObjectType,
 	sourceValue: SourceObjectType[keyof SourceObjectType],
-	source: SourceObjectType
+	source: SourceObjectType,
 ) => [
 	targetKey: MappedObjectKeyType,
 	targetValue: MappedObjectValueType,
@@ -61,7 +61,7 @@ type DeepMapper<
 > = (
 	sourceKey: string,
 	sourceValue: unknown,
-	source: SourceObjectType
+	source: SourceObjectType,
 ) => [
 	targetKey: MappedObjectKeyType,
 	targetValue: MappedObjectValueType,
@@ -78,7 +78,7 @@ type DeepMapperWithSymbols<
 > = (
 	sourceKey: string | symbol,
 	sourceValue: unknown,
-	source: SourceObjectType
+	source: SourceObjectType,
 ) => [
 	targetKey: MappedObjectKeyType,
 	targetValue: MappedObjectValueType,
@@ -176,7 +176,7 @@ export default function mapObject<
 >(
 	source: SourceObjectType,
 	mapper: DeepMapperWithSymbols<SourceObjectType, MappedObjectKeyType, MappedObjectValueType>,
-	options: DeepOptions & SymbolOptions & TargetOptions<TargetObjectType>
+	options: DeepOptions & SymbolOptions & TargetOptions<TargetObjectType>,
 ): TargetObjectType & Record<string | symbol, unknown>;
 export default function mapObject<
 	SourceObjectType extends Record<string | symbol, unknown>,
@@ -185,7 +185,7 @@ export default function mapObject<
 >(
 	source: SourceObjectType,
 	mapper: DeepMapperWithSymbols<SourceObjectType, MappedObjectKeyType, MappedObjectValueType>,
-	options: DeepOptions & SymbolOptions
+	options: DeepOptions & SymbolOptions,
 ): Record<string | symbol, unknown>;
 export default function mapObject<
 	SourceObjectType extends Record<string | symbol, unknown>,
@@ -199,7 +199,7 @@ export default function mapObject<
 		MappedObjectKeyType,
 		MappedObjectValueType
 	>,
-	options: SymbolOptions & TargetOptions<TargetObjectType>
+	options: SymbolOptions & TargetOptions<TargetObjectType>,
 ): TargetObjectType & Record<MappedObjectKeyType, MappedObjectValueType>;
 export default function mapObject<
 	SourceObjectType extends Record<string | symbol, unknown>,
@@ -212,7 +212,7 @@ export default function mapObject<
 		MappedObjectKeyType,
 		MappedObjectValueType
 	>,
-	options: SymbolOptions
+	options: SymbolOptions,
 ): Record<MappedObjectKeyType, MappedObjectValueType>;
 // Overloads without includeSymbols (default)
 export default function mapObject<
@@ -223,7 +223,7 @@ export default function mapObject<
 >(
 	source: SourceObjectType,
 	mapper: DeepMapper<SourceObjectType, MappedObjectKeyType, MappedObjectValueType>,
-	options: DeepOptions & TargetOptions<TargetObjectType>
+	options: DeepOptions & TargetOptions<TargetObjectType>,
 ): TargetObjectType & Record<string | symbol, unknown>;
 export default function mapObject<
 	SourceObjectType extends Record<string | symbol, unknown>,
@@ -232,7 +232,7 @@ export default function mapObject<
 >(
 	source: SourceObjectType,
 	mapper: DeepMapper<SourceObjectType, MappedObjectKeyType, MappedObjectValueType>,
-	options: DeepOptions
+	options: DeepOptions,
 ): Record<string | symbol, unknown>;
 export default function mapObject<
 	SourceObjectType extends Record<string | symbol, unknown>,
@@ -246,7 +246,7 @@ export default function mapObject<
 		MappedObjectKeyType,
 		MappedObjectValueType
 	>,
-	options: TargetOptions<TargetObjectType>
+	options: TargetOptions<TargetObjectType>,
 ): TargetObjectType & Record<MappedObjectKeyType, MappedObjectValueType>;
 export default function mapObject<
 	SourceObjectType extends Record<string | symbol, unknown>,
@@ -259,5 +259,5 @@ export default function mapObject<
 		MappedObjectKeyType,
 		MappedObjectValueType
 	>,
-	options?: Options
+	options?: Options,
 ): Record<MappedObjectKeyType, MappedObjectValueType>;

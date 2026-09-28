@@ -1,44 +1,45 @@
-import test from 'ava';
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
 import mapObject, {mapObjectSkip} from './index.js';
 
-test('main', t => {
-	t.is(mapObject({foo: 'bar'}, key => [key, 'unicorn']).foo, 'unicorn');
-	t.is(mapObject({foo: 'bar'}, (key, value) => ['unicorn', value]).unicorn, 'bar');
-	t.is(mapObject({foo: 'bar'}, (key, value) => [value, key]).bar, 'foo');
+test('main', () => {
+	assert.equal(mapObject({foo: 'bar'}, key => [key, 'unicorn']).foo, 'unicorn');
+	assert.equal(mapObject({foo: 'bar'}, (key, value) => ['unicorn', value]).unicorn, 'bar');
+	assert.equal(mapObject({foo: 'bar'}, (key, value) => [value, key]).bar, 'foo');
 });
 
-test('mapper source argument is always the original input', t => {
+test('mapper source argument is always the original input', () => {
 	const input = {foo: {bar: 1}, a: {b: {c: 1}}};
 
 	// Test shallow mode
 	mapObject(input, (key, value, source) => {
-		t.is(source, input);
+		assert.equal(source, input);
 		return [key, value];
 	});
 
 	// Test deep mode
 	mapObject(input, (key, value, source) => {
-		t.is(source, input); // Should always be the root input object, not nested objects
+		assert.equal(source, input); // Should always be the root input object, not nested objects
 		return [key, value];
 	}, {deep: true});
 });
 
-test('target option', t => {
+test('target option', () => {
 	const input = {x: 1, foo: 'bar'};
 	const target = {y: 2};
 
 	// Test that the function returns the target object and source argument is correct
 	const result = mapObject(input, (key, value, source) => {
-		t.is(source, input);
-		t.not(source, target);
+		assert.equal(source, input);
+		assert.notStrictEqual(source, target);
 		return [key === 'foo' ? 'baz' : key, value];
 	}, {target});
 
-	t.is(result, target);
-	t.deepEqual(target, {y: 2, x: 1, baz: 'bar'});
+	assert.equal(result, target);
+	assert.deepEqual(target, {y: 2, x: 1, baz: 'bar'});
 });
 
-test('deep option', t => {
+test('deep option', () => {
 	const object = {
 		one: 1,
 		object: {
@@ -69,10 +70,10 @@ test('deep option', t => {
 
 	const mapper = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
 	const actual = mapObject(object, mapper, {deep: true});
-	t.deepEqual(actual, expected);
+	assert.deepEqual(actual, expected);
 });
 
-test('shouldRecurse mapper option', t => {
+test('shouldRecurse mapper option', () => {
 	const object = {
 		one: 1,
 		object: {
@@ -101,19 +102,15 @@ test('shouldRecurse mapper option', t => {
 		],
 	};
 
-	const mapper = (key, value) => {
-		if (key === 'object') {
-			return [key, value, {shouldRecurse: false}];
-		}
-
-		return [key, typeof value === 'number' ? value * 2 : value];
-	};
+	const mapper = (key, value) => key === 'object'
+		? [key, value, {shouldRecurse: false}]
+		: [key, typeof value === 'number' ? value * 2 : value];
 
 	const actual = mapObject(object, mapper, {deep: true});
-	t.deepEqual(actual, expected);
+	assert.deepEqual(actual, expected);
 });
 
-test('nested arrays', t => {
+test('nested arrays', () => {
 	const object = {
 		array: [
 			[
@@ -142,10 +139,10 @@ test('nested arrays', t => {
 
 	const mapper = (key, value) => [key, typeof value === 'number' ? value * 2 : value];
 	const actual = mapObject(object, mapper, {deep: true});
-	t.deepEqual(actual, expected);
+	assert.deepEqual(actual, expected);
 });
 
-test('handles circular references', t => {
+test('handles circular references', () => {
 	const object = {
 		one: 1,
 		array: [
@@ -169,53 +166,62 @@ test('handles circular references', t => {
 	expected.ARRAY2 = expected.ARRAY;
 	expected.ARRAY.push(expected);
 
-	t.deepEqual(actual, expected);
+	assert.deepEqual(actual, expected);
 });
 
-test('the same array is mapped to the same array', t => {
+test('the same array is mapped to the same array', () => {
 	const array = [2];
 	const object = {array, array2: array};
 
 	const actual = mapObject(object, (key, value) => [key, value], {deep: true});
 
-	t.is(actual.array, actual.array2);
+	assert.equal(actual.array, actual.array2);
 });
 
-test('handles circular references in arrays', t => {
+test('handles circular references in arrays', () => {
 	const array = [2];
 	array.push(array);
 
 	const actual = mapObject({array}, (key, value) => [key, value], {deep: true});
 
-	t.is(actual.array[1], actual.array);
+	assert.equal(actual.array[1], actual.array);
 });
 
-test('validates input', t => {
-	t.throws(() => {
+test('validates input', () => {
+	assert.throws(() => {
 		mapObject(1, () => {});
 	}, {
-		instanceOf: TypeError,
+		name: 'TypeError',
+		message: 'Expected an object, got `1` (number)',
 	});
 
-	t.throws(() => {
+	assert.throws(() => {
+		mapObject('unicorn', () => {});
+	}, {
+		name: 'TypeError',
+		message: 'Expected an object, got `unicorn` (string)',
+	});
+
+	assert.throws(() => {
 		mapObject([1, 2], (key, value) => [value, key]);
 	}, {
-		instanceOf: TypeError,
+		name: 'TypeError',
+		message: 'Expected an object, got an array',
 	});
 });
 
-test('__proto__ keys are safely dropped', t => {
+test('__proto__ keys are safely dropped', () => {
 	const input = {['__proto__']: {one: 1}};
 	const output = mapObject(input, (key, value) => [key, value]);
-	t.deepEqual(output, {});
+	assert.deepEqual(output, {});
 
-	// AVA's equality checking isn't quite strict enough to catch the difference
-	// between plain objects as prototypes and Object.prototype, so we also check
-	// the prototype by identity
-	t.is(Object.getPrototypeOf(output), Object.prototype);
+	// `assert.deepEqual` is not quite strict enough to catch the difference between a
+	// plain object as a prototype and `Object.prototype`, so the prototype is also
+	// checked by identity.
+	assert.equal(Object.getPrototypeOf(output), Object.prototype);
 });
 
-test('remove keys (#36)', t => {
+test('remove keys (#36)', () => {
 	const object = {
 		one: 1,
 		two: 2,
@@ -227,10 +233,10 @@ test('remove keys (#36)', t => {
 
 	const mapper = (key, value) => value === 1 ? [key, value] : mapObjectSkip;
 	const actual = mapObject(object, mapper, {deep: true});
-	t.deepEqual(actual, expected);
+	assert.deepEqual(actual, expected);
 });
 
-test('should not recurse into Jest-like matchers', t => {
+test('should not recurse into Jest-like matchers', () => {
 	// Mock a Jest asymmetric matcher like expect.anything()
 	const jestMatcher = {
 		$$typeof: Symbol.for('jest.asymmetricMatcher'),
@@ -247,29 +253,29 @@ test('should not recurse into Jest-like matchers', t => {
 	const result = mapObject(input, (key, value) => {
 		calls++;
 		// Should not recurse into jestMatcher properties
-		t.not(key, '$$typeof');
-		t.not(key, 'asymmetricMatch');
-		t.not(key, 'toString');
+		assert.notEqual(key, '$$typeof');
+		assert.notEqual(key, 'asymmetricMatch');
+		assert.notEqual(key, 'toString');
 		return [key, value];
 	}, {deep: true});
 
-	t.is(result.matcher, jestMatcher);
-	t.is(result.normal.nested, 'value');
-	t.is(calls, 3); // 'normal', 'nested', 'matcher'
+	assert.equal(result.matcher, jestMatcher);
+	assert.equal(result.normal.nested, 'value');
+	assert.equal(calls, 3); // 'normal', 'nested', 'matcher'
 });
 
-test('options object is not mutated', t => {
+test('options object is not mutated', () => {
 	const options = {deep: true, target: {}};
 	const originalOptions = {...options};
 
 	mapObject({a: 1}, (key, value) => [key, value], options);
 
-	t.deepEqual(options, originalOptions);
+	assert.deepEqual(options, originalOptions);
 });
 
-test('built-in objects are not recursed into', t => {
+test('built-in objects are not recursed into', () => {
 	const date = new Date();
-	const regex = /test/;
+	const regex = /test/v;
 	const error = new Error('test');
 	const map = new Map([['key', 'value']]);
 	const set = new Set([1, 2, 3]);
@@ -290,16 +296,41 @@ test('built-in objects are not recursed into', t => {
 	};
 
 	const calls = [];
-	mapObject(input, (key, value) => {
+	const result = mapObject(input, (key, value) => {
 		calls.push(key);
 		return [key, value];
 	}, {deep: true});
 
 	// Should visit top-level keys and nested normal object
-	t.deepEqual(calls.sort(), ['buffer', 'date', 'error', 'map', 'nested', 'normal', 'promise', 'regex', 'set', 'uint8Array']);
+	assert.deepEqual(calls.toSorted((a, b) => a.localeCompare(b)), ['buffer', 'date', 'error', 'map', 'nested', 'normal', 'promise', 'regex', 'set', 'uint8Array']);
+
+	// Counting keys alone cannot tell a recursed `Date` from an untouched one, since a
+	// `Date` has no own enumerable keys either way. The result has to be the very same
+	// object as the input, not a rebuilt copy.
+	assert.ok(Object.is(result.date, date));
+	assert.ok(Object.is(result.regex, regex));
+	assert.ok(Object.is(result.error, error));
+	assert.ok(Object.is(result.map, map));
+	assert.ok(Object.is(result.set, set));
+	assert.ok(Object.is(result.promise, promise));
+	assert.ok(Object.is(result.buffer, buffer));
+	assert.ok(Object.is(result.uint8Array, uint8Array));
+
+	assert.deepEqual(result.normal, {nested: 'value'});
 });
 
-test('symbol keys are ignored by default', t => {
+test('shallow mode does not recurse', () => {
+	const nested = {one: 1};
+	const array = [{two: 2}];
+
+	const result = mapObject({nested, array}, (key, value) => [key, typeof value === 'number' ? value * 2 : value]);
+
+	assert.equal(result.nested, nested);
+	assert.equal(result.array, array);
+	assert.deepEqual(result.nested, {one: 1});
+});
+
+test('symbol keys are ignored by default', () => {
 	const symbol = Symbol('test');
 	const input = {
 		regular: 'value',
@@ -308,13 +339,13 @@ test('symbol keys are ignored by default', t => {
 
 	const result = mapObject(input, (key, value) => [key, value]);
 
-	t.true('regular' in result);
-	t.false(symbol in result);
-	t.is(result.regular, 'value');
-	t.is(result[symbol], undefined);
+	assert.ok(Object.hasOwn(result, 'regular'));
+	assert.ok(!Object.hasOwn(result, symbol));
+	assert.equal(result.regular, 'value');
+	assert.equal(result[symbol], undefined);
 });
 
-test('symbol keys are included with includeSymbols option', t => {
+test('symbol keys are included with includeSymbols option', () => {
 	const symbol = Symbol('test');
 	const input = {
 		regular: 'value',
@@ -323,13 +354,13 @@ test('symbol keys are included with includeSymbols option', t => {
 
 	const result = mapObject(input, (key, value) => [key, value], {includeSymbols: true});
 
-	t.true('regular' in result);
-	t.true(symbol in result);
-	t.is(result.regular, 'value');
-	t.is(result[symbol], 'symbolValue');
+	assert.ok(Object.hasOwn(result, 'regular'));
+	assert.ok(Object.hasOwn(result, symbol));
+	assert.equal(result.regular, 'value');
+	assert.equal(result[symbol], 'symbolValue');
 });
 
-test('symbol keys work with deep option', t => {
+test('symbol keys work with deep option', () => {
 	const symbol1 = Symbol('outer');
 	const symbol2 = Symbol('inner');
 	const input = {
@@ -346,43 +377,43 @@ test('symbol keys work with deep option', t => {
 		includeSymbols: true,
 	});
 
-	t.is(result.regular, 'value');
-	t.is(result.nested.regularNested, 'nestedValue');
-	t.is(result.nested[symbol2], 'innerSymbol');
-	t.is(result[symbol1], 'outerSymbol');
+	assert.equal(result.regular, 'value');
+	assert.equal(result.nested.regularNested, 'nestedValue');
+	assert.equal(result.nested[symbol2], 'innerSymbol');
+	assert.equal(result[symbol1], 'outerSymbol');
 });
 
-test('handles invalid mapper return values gracefully', t => {
-	t.throws(() => {
+test('handles invalid mapper return values gracefully', () => {
+	assert.throws(() => {
 		mapObject({a: 1}, () => null);
 	}, {
-		instanceOf: TypeError,
+		name: 'TypeError',
 		message: 'Mapper must return an array or mapObjectSkip, got null',
 	});
 
-	t.throws(() => {
+	assert.throws(() => {
 		mapObject({a: 1}, () => 'string');
 	}, {
-		instanceOf: TypeError,
+		name: 'TypeError',
 		message: 'Mapper must return an array or mapObjectSkip, got string',
 	});
 
-	t.throws(() => {
+	assert.throws(() => {
 		mapObject({a: 1}, () => []);
 	}, {
-		instanceOf: TypeError,
+		name: 'TypeError',
 		message: 'Mapper must return an array with at least 2 elements [key, value], got 0 elements',
 	});
 
-	t.throws(() => {
+	assert.throws(() => {
 		mapObject({a: 1}, () => ['key']);
 	}, {
-		instanceOf: TypeError,
+		name: 'TypeError',
 		message: 'Mapper must return an array with at least 2 elements [key, value], got 1 elements',
 	});
 });
 
-test('handles non-configurable target properties gracefully', t => {
+test('handles non-configurable target properties gracefully', () => {
 	const target = {};
 	Object.defineProperty(target, 'readonly', {
 		value: 'original',
@@ -392,15 +423,15 @@ test('handles non-configurable target properties gracefully', t => {
 
 	const result = mapObject({readonly: 'new', other: 'value'}, (key, value) => [key, value], {target});
 
-	t.is(result, target);
-	t.is(result.readonly, 'original'); // Should remain unchanged
-	t.is(result.other, 'value'); // Should be added
+	assert.equal(result, target);
+	assert.equal(result.readonly, 'original'); // Should remain unchanged
+	assert.equal(result.other, 'value'); // Should be added
 });
 
-test('handles property key collisions', t => {
+test('handles property key collisions', () => {
 	const result = mapObject({a: 1, b: 2}, (key, value) => ['same', value]);
 
 	// Last value wins
-	t.deepEqual(result, {same: 2});
-	t.is(Object.keys(result).length, 1);
+	assert.deepEqual(result, {same: 2});
+	assert.equal(Object.keys(result).length, 1);
 });
